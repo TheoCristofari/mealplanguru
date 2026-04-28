@@ -31,6 +31,11 @@ const passwordForm = document.querySelector("[data-password-form]");
 const passwordInput = document.querySelector("[data-password-input]");
 const passwordError = document.querySelector("[data-password-error]");
 const lockSiteButton = document.querySelector("[data-lock-site]");
+const authButton = document.querySelector("[data-auth-button]");
+const authModal = document.querySelector("[data-auth-modal]");
+const authForm = document.querySelector("[data-auth-form]");
+const authMessage = document.querySelector("[data-auth-message]");
+const closeAuthButton = document.querySelector("[data-close-auth]");
 const SITE_PASSWORD = "guru";
 const SITE_UNLOCK_KEY = "mealPlanGuruUnlocked";
 const RECIPE_DATA_URL = "recipes.json";
@@ -38,6 +43,7 @@ const SUPABASE_URL = "https://beguxpppyngjphetlviv.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_r_My8zwj297QswRnj9Dvmw_6vMeJBhj";
 const SUPABASE_RECIPE_TABLE = "recipes";
 const SUPABASE_IMAGE_BUCKET = "recipe-images";
+const ADMIN_EMAIL = "theo@companydebt.com";
 const supabaseClient = window.supabase?.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) || null;
 const RECIPE_LABEL_ORDER = ["pasta", "rice", "potato", "noodles", "soup", "quiche", ""];
 const RECIPE_LABEL_NAMES = {
@@ -168,6 +174,8 @@ let shoppingRecipes = loadShoppingRecipes();
 let shoppingView = "category";
 let recipeFilter = "all";
 let editingRecipeId = null;
+let currentUser = null;
+let isAdmin = false;
 
 function unlockSite() {
   localStorage.setItem(SITE_UNLOCK_KEY, "true");
@@ -192,6 +200,57 @@ function initializePasswordGate() {
 
   document.body.classList.add("locked");
   passwordInput?.focus();
+}
+
+function updateAdminState(user) {
+  currentUser = user || null;
+  isAdmin = currentUser?.email?.toLowerCase() === ADMIN_EMAIL;
+  document.body.classList.toggle("is-admin", isAdmin);
+
+  if (authButton) {
+    authButton.textContent = isAdmin ? "Sign out" : "Admin";
+    authButton.setAttribute("aria-pressed", String(isAdmin));
+  }
+
+  if (addRecipeButton) {
+    addRecipeButton.hidden = !isAdmin;
+  }
+
+  if (importRecipesButton) {
+    importRecipesButton.hidden = !isAdmin;
+  }
+
+  renderRecipes();
+}
+
+async function initializeAuth() {
+  if (!supabaseClient) {
+    return;
+  }
+
+  const { data } = await supabaseClient.auth.getSession();
+  updateAdminState(data.session?.user || null);
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    updateAdminState(session?.user || null);
+  });
+}
+
+function openAuthModal() {
+  if (!authModal || !authMessage) {
+    return;
+  }
+
+  authMessage.textContent = "Sign in to add, edit, or delete recipes.";
+  authModal.hidden = false;
+  authForm?.elements.email?.focus();
+}
+
+function closeAuthModal() {
+  if (!authModal) {
+    return;
+  }
+
+  authModal.hidden = true;
 }
 
 function showView(viewName) {
@@ -435,7 +494,7 @@ async function loadSupabaseRecipes() {
 }
 
 async function saveRecipeToSupabase(recipe) {
-  if (!supabaseClient) {
+  if (!supabaseClient || !isAdmin) {
     return;
   }
 
@@ -445,7 +504,7 @@ async function saveRecipeToSupabase(recipe) {
 }
 
 async function deleteRecipeFromSupabase(recipeId) {
-  if (!supabaseClient || !recipeId) {
+  if (!supabaseClient || !recipeId || !isAdmin) {
     return;
   }
 
@@ -453,7 +512,7 @@ async function deleteRecipeFromSupabase(recipeId) {
 }
 
 async function syncRecipesToSupabase() {
-  if (!supabaseClient || recipes.length === 0) {
+  if (!supabaseClient || !isAdmin || recipes.length === 0) {
     return;
   }
 
@@ -503,7 +562,7 @@ function slugifyFilename(value) {
 }
 
 async function uploadRecipePhoto(file, recipe) {
-  if (!supabaseClient || !file || file.size === 0) {
+  if (!supabaseClient || !isAdmin || !file || file.size === 0) {
     return "";
   }
 
@@ -1245,7 +1304,11 @@ function createRecipeCard(recipe) {
   }
 
   actions.append(deleteButton, editButton);
-  content.append(textContent, actions);
+  if (isAdmin) {
+    content.append(textContent, actions);
+  } else {
+    content.append(textContent);
+  }
   card.append(content);
 
   return card;
@@ -1281,6 +1344,15 @@ closeRecipeModalButton?.addEventListener("click", closeRecipeModal);
 cancelDeleteButton?.addEventListener("click", closeDeleteModal);
 resetPlannerButton?.addEventListener("click", openResetModal);
 cancelResetButton?.addEventListener("click", closeResetModal);
+authButton?.addEventListener("click", async () => {
+  if (isAdmin) {
+    await supabaseClient?.auth.signOut();
+    return;
+  }
+
+  openAuthModal();
+});
+closeAuthButton?.addEventListener("click", closeAuthModal);
 updateShoppingButton?.addEventListener("click", () => {
   shoppingItems = buildShoppingList();
   shoppingRecipes = buildShoppingRecipes();
@@ -1303,6 +1375,11 @@ exportRecipesButton?.addEventListener("click", async () => {
   }
 });
 importRecipesButton?.addEventListener("click", () => {
+  if (!isAdmin) {
+    openAuthModal();
+    return;
+  }
+
   importRecipesFile?.click();
 });
 importRecipesFile?.addEventListener("change", () => {
@@ -1338,7 +1415,44 @@ passwordForm?.addEventListener("submit", (event) => {
   passwordInput?.select();
 });
 lockSiteButton?.addEventListener("click", lockSite);
+authForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const email = String(new FormData(authForm).get("email") || "").trim().toLowerCase();
+
+  if (email !== ADMIN_EMAIL) {
+    authMessage.textContent = `Only ${ADMIN_EMAIL} can edit recipes.`;
+    return;
+  }
+
+  if (!supabaseClient) {
+    authMessage.textContent = "Admin login is not available right now.";
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: window.location.href.split("#")[0],
+    },
+  });
+
+  authMessage.textContent = error
+    ? "Could not send the login link. Try again in a moment."
+    : "Check your email for the login link.";
+});
+authModal?.addEventListener("click", (event) => {
+  if (event.target === authModal) {
+    closeAuthModal();
+  }
+});
 confirmDeleteButton?.addEventListener("click", async () => {
+  if (!isAdmin) {
+    closeDeleteModal();
+    openAuthModal();
+    return;
+  }
+
   const recipeId = pendingDeleteCard?.dataset.recipeId;
   const recipeToDelete = recipes.find((recipe) => recipe.id === recipeId);
   recipes = recipes.filter((recipe) => recipe.id !== recipeId);
@@ -1409,6 +1523,10 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && shoppingUpdatedModal && !shoppingUpdatedModal.hidden) {
     closeShoppingUpdatedModal();
   }
+
+  if (event.key === "Escape" && authModal && !authModal.hidden) {
+    closeAuthModal();
+  }
 });
 
 document.addEventListener("click", (event) => {
@@ -1419,6 +1537,12 @@ document.addEventListener("click", (event) => {
 
 recipeForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  if (!isAdmin) {
+    closeRecipeModal();
+    openAuthModal();
+    return;
+  }
 
   const formData = new FormData(recipeForm);
   const recipeName = String(formData.get("recipeName") || "").trim();
@@ -1495,6 +1619,7 @@ recipeForm?.addEventListener("submit", async (event) => {
 
 async function initializeApp() {
   initializePasswordGate();
+  await initializeAuth();
   await loadInitialRecipes();
   showView(window.location.hash.replace("#", ""));
   renderCalendar();

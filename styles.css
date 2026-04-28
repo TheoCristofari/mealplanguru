@@ -180,6 +180,28 @@ body:not(.locked) .password-screen {
   stroke: currentColor;
 }
 
+.auth-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  background: var(--surface);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.auth-button:hover,
+.auth-button[aria-pressed="true"] {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
 .page {
   padding: 28px 350px 56px;
 }
@@ -731,9 +753,13 @@ h1 {
 
 .recipe-card-content {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 32px;
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px;
   padding: 14px;
+}
+
+body.is-admin .recipe-card-content {
+  grid-template-columns: minmax(0, 1fr) 32px;
 }
 
 .recipe-card-actions {
@@ -951,6 +977,11 @@ h1 {
   margin-bottom: 22px;
   color: var(--muted);
   line-height: 1.5;
+}
+
+.auth-form {
+  display: grid;
+  gap: 18px;
 }
 
 .confirm-actions {
