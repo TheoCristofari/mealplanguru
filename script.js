@@ -26,119 +26,120 @@ const importRecipesFile = document.querySelector("[data-import-recipes-file]");
 const labelInput = document.querySelector("[data-label-input]");
 const labelOptions = document.querySelectorAll("[data-label-option]");
 const recipeFilterButtons = document.querySelectorAll("[data-recipe-filter]");
+const RECIPE_DATA_URL = "recipes.json";
 
-const DEFAULT_RECIPES = [
-  {
-    id: "sheet-minestrone",
-    name: "Minestrone",
-    ingredients: "1 Onion\n1 Carrot\n1 Courgette\n1 Celery\n1 Can Mutti\n1 Canelini beans\nOrrechiete\nGrated Cheese",
-    photoUrl: "images/minestrone.jpg",
-  },
-  {
-    id: "sheet-sushi",
-    name: "Sushi",
-    ingredients: "1 Pack Nori\n1 Pack Sushi Rice\nRice Vinegar\nMayo\n1 Pack Smoked Tofu\n1 Avocat\n1 Cucumber\n1 Carrot\n1 Pepper",
-    photoUrl: "images/sushi.jpg",
-  },
-  {
-    id: "sheet-chili",
-    name: "Chili",
-    ingredients: "1 Onion\n1 Pepper\n2 garlic cloves\n1 Can Mutti\n1 Can Kidney Beans\n1 Can Corn",
-    photoUrl: "images/chili.jpg",
-  },
-  {
-    id: "sheet-burritos",
-    name: "Burritos",
-    ingredients: "1 Pack Wraps\nGrated Cheese\n1 Pack Potatoes\n1 Block Tofu\n1 Onion\n1 Thick Cream\n1 Pack Cherry Tomatoes\n1 Avocat\n2 Corn on the Cob",
-    photoUrl: "images/burritos.jpg",
-  },
-  {
-    id: "sheet-dan-dan-noodles",
-    name: "Dan Dan noodles",
-    ingredients: "150g dried wheat noodles\n100g vegan mince (soy or mushroom-based)\n1 tbsp soy sauce\n1 tbsp Chinese black vinegar\n1 tbsp tahini or Chinese sesame paste\n1 tsp chili oil\n1 garlic clove\n1 spring onion\n200ml veg stock\npak choi or tenderstem broccoli",
-    photoUrl: "images/dan-dan-noodles.jpg",
-  },
-  {
-    id: "sheet-quiche",
-    name: "Quiche",
-    ingredients: "Shortcrust Patry\nCream\nCornflour\nGood Tofu\nGrated Cheese\nSalad",
-    photoUrl: "images/quiche.jpg",
-  },
-  {
-    id: "sheet-shepherds-pie",
-    name: "Shepherd's pie",
-    ingredients: "1 tbsp olive oil\n1 small onion\n1 carrot\n1 celery stick\n100g mushrooms\n200g lentils (cooked or tinned)\n200ml veg stock\n1 tbsp tomato puree\n1/2 tsp thyme\n1/2 tsp rosemary\n400g potatoes\nsplash plant milk\n1 tbsp vegan butter",
-    photoUrl: "images/shepherd-s-pie.jpg",
-  },
-  {
-    id: "sheet-orzo-meatball-soup",
-    name: "Orzo Meatball Soup",
-    ingredients: "1 tbsp olive oil\n1 small onion\n1 garlic clove\n400g tin chopped tomatoes\n500ml veg stock\n60g orzo\n6-8 vegan meatballs\nhandful spinach\nsalt & pepper",
-    photoUrl: "images/orzo-meatball-soup.jpg",
-  },
-  {
-    id: "sheet-spaghetti-bolognese",
-    name: "Spaghetti Bolognese",
-    ingredients: "150g spaghetti\n1 tbsp olive oil\n1 onion\n1 carrot\n1 celery stick\n2 garlic cloves\n250g vegan mince or lentils\n400g tin chopped tomatoes\n1 tbsp tomato puree\n1 tsp oregano\n1/2 tsp thyme\nsalt & pepper",
-    photoUrl: "images/spaghetti-bolognese.webp",
-  },
-  {
-    id: "sheet-chickpea-curry",
-    name: "Chickpea Curry",
-    ingredients: "1 tbsp oil\n1 onion\n2 garlic cloves\n1 tsp grated ginger\n1 tbsp curry powder\n400g tin chopped tomatoes\n400g tin chickpeas\n100ml coconut milk\nhandful spinach\ncoriander (optional)\nsalt & pepper",
-    photoUrl: "images/chickpea-curry.jpg",
-  },
-  {
-    id: "sheet-dahl",
-    name: "Dahl",
-    ingredients: "1 tbsp oil\n1 onion\n2 garlic cloves\n1 tsp grated ginger\n1 tsp turmeric\n1 tsp cumin seeds\n150g red lentils\n500ml veg stock\n200ml coconut milk\ncoriander (optional)\nsalt",
-    photoUrl: "images/dahl.jpg",
-  },
-  {
-    id: "sheet-cassoulet",
-    name: "Cassoulet",
-    ingredients: "1 tbsp oil\n1 onion\n1 carrot\n1 celery stick\n2 garlic cloves\n400g tin chopped tomatoes\n400g tin cannellini beans\n400g tin butter beans\n200ml veg stock\n1 tsp thyme\n1 bay leaf\nsalt & pepper",
-    photoUrl: "images/cassoulet.webp",
-  },
-  {
-    id: "sheet-marry-me-lentils",
-    name: "Marry Me Lentils",
-    ingredients: "150g pasta (penne or rigatoni)\n1 tbsp oil\n2 garlic cloves\n100g red lentils\n200ml veg stock\n200ml coconut milk or oat cream\n1 tbsp tomato puree\n1 tsp paprika\n1/2 tsp chili flakes\nhandful spinach",
-    photoUrl: "images/marry-me-lentils.webp",
-  },
-  {
-    id: "sheet-risotto",
-    name: "Risotto",
-    ingredients: "1 tbsp oil\n1 onion\n1 garlic clove\n150g arborio rice\n500ml veg stock\n150g mushrooms\nsplash white wine (optional)\n2 tbsp nutritional yeast\n1 tbsp vegan butter\nparsley",
-    photoUrl: "images/risotto.jpg",
-  },
-  {
-    id: "sheet-rice-ratatouille",
-    name: "Rice & Ratatouille",
-    ingredients: "100g rice\n1 tbsp olive oil\n1 onion\n1 courgette\n1 aubergine\n1 red pepper\n2 garlic cloves\n400g tin chopped tomatoes\n1/2 tsp thyme\n1/2 tsp oregano\nsalt & pepper",
-    photoUrl: "images/rice-ratatouille.jpg",
-  },
-  {
-    id: "sheet-korma",
-    name: "Korma",
-    ingredients: "Riz\nCashews\nCoconut Milk\nOnion\nPois Chiches\nButter Beans\nConcentre de Tomate",
-    photoUrl: "images/korma.jpg",
-  },
-  {
-    id: "sheet-pitah-patate-salade",
-    name: "Pitah & Patate Salade",
-    ingredients: "Patates\nPitah Bread\nTomates Sechees\nOlives Noires (Denoyautees)\nFromage a tartiner",
-    photoUrl: "images/pita.jpg",
-  },
-];
 
-const DEFAULT_RECIPE_PHOTOS = DEFAULT_RECIPES.reduce((photos, recipe) => {
-  photos[recipe.name.toLowerCase()] = recipe.photoUrl;
-  return photos;
-}, {});
+const PANTRY_INGREDIENTS = new Set([
+  "1 tbsp oil",
+  "1 tbsp olive oil",
+  "olive oil",
+  "salt",
+  "salt & pepper",
+  "pepper",
+]);
+
+const INGREDIENT_HARMONISATIONS = {
+  "1 aubergine": "1 aubergine",
+  "1 avocat": "1 avocado",
+  "1 bay leaf": "1 bay leaf",
+  "1 block tofu": "1 block tofu",
+  "1 can corn": "1 can corn",
+  "1 can kidney beans": "1 can kidney beans",
+  "1 can mutti": "1 can chopped tomatoes",
+  "1 canelini beans": "1 can cannellini beans",
+  "1 carrot": "1 carrot",
+  "1 celery": "1 celery stick",
+  "1 celery stick": "1 celery stick",
+  "1 courgette": "1 courgette",
+  "1 cucumber": "1 cucumber",
+  "1 garlic clove": "1 garlic clove",
+  "1 onion": "1 onion",
+  "1 pack cherry tomatoes": "1 pack cherry tomatoes",
+  "1 pack nori": "1 pack nori",
+  "1 pack potatoes": "1 pack potatoes",
+  "1 pack smoked tofu": "1 pack smoked tofu",
+  "1 pack sushi rice": "1 pack sushi rice",
+  "1 pack wraps": "1 pack wraps",
+  "1 pepper": "1 pepper",
+  "1 red pepper": "1 red pepper",
+  "1 small onion": "1 onion",
+  "1 spring onion": "1 spring onion",
+  "1 tbsp chinese black vinegar": "1 tbsp Chinese black vinegar",
+  "1 tbsp curry powder": "1 tbsp curry powder",
+  "1 tbsp soy sauce": "1 tbsp soy sauce",
+  "1 tbsp tahini or chinese sesame paste": "1 tbsp tahini or Chinese sesame paste",
+  "1 tbsp tomato puree": "1 tbsp tomato puree",
+  "1 tbsp vegan butter": "1 tbsp vegan butter",
+  "1 thick cream": "1 thick cream",
+  "1 tsp chili oil": "1 tsp chili oil",
+  "1 tsp cumin seeds": "1 tsp cumin seeds",
+  "1 tsp grated ginger": "1 tsp grated ginger",
+  "1 tsp oregano": "1 tsp oregano",
+  "1 tsp paprika": "1 tsp paprika",
+  "1 tsp thyme": "1 tsp thyme",
+  "1 tsp turmeric": "1 tsp turmeric",
+  "1/2 tsp chili flakes": "1/2 tsp chili flakes",
+  "1/2 tsp oregano": "1/2 tsp oregano",
+  "1/2 tsp rosemary": "1/2 tsp rosemary",
+  "1/2 tsp thyme": "1/2 tsp thyme",
+  "100g mushrooms": "100 g mushrooms",
+  "100g red lentils": "100 g red lentils",
+  "100g rice": "100 g rice",
+  "100g vegan mince (soy or mushroom-based)": "100 g vegan mince",
+  "100ml coconut milk": "100 ml coconut milk",
+  "150g arborio rice": "150 g arborio rice",
+  "150g dried wheat noodles": "150 g dried wheat noodles",
+  "150g mushrooms": "150 g mushrooms",
+  "150g pasta (penne or rigatoni)": "150 g pasta",
+  "150g red lentils": "150 g red lentils",
+  "150g spaghetti": "150 g spaghetti",
+  "2 corn on the cob": "2 corn on the cob",
+  "2 garlic cloves": "2 garlic cloves",
+  "2 tbsp nutritional yeast": "2 tbsp nutritional yeast",
+  "200g lentils (cooked or tinned)": "200 g lentils",
+  "200ml coconut milk": "200 ml coconut milk",
+  "200ml coconut milk or oat cream": "200 ml coconut milk or oat cream",
+  "200ml veg stock": "200 ml veg stock",
+  "250g vegan mince or lentils": "250 g vegan mince or lentils",
+  "400g potatoes": "400 g potatoes",
+  "400g tin butter beans": "1 can butter beans",
+  "400g tin cannellini beans": "1 can cannellini beans",
+  "400g tin chickpeas": "1 can chickpeas",
+  "400g tin chopped tomatoes": "1 can chopped tomatoes",
+  "500ml veg stock": "500 ml veg stock",
+  "6-8 vegan meatballs": "6-8 vegan meatballs",
+  "60g orzo": "60 g orzo",
+  "butter beans": "1 can butter beans",
+  "cashews": "cashews",
+  "coconut milk": "coconut milk",
+  "concentre de tomate": "tomato puree",
+  "coriander (optional)": "coriander",
+  "cornflour": "cornflour",
+  "cream": "cream",
+  "fromage a tartiner": "cream cheese",
+  "good tofu": "tofu",
+  "grated cheese": "grated cheese",
+  "handful spinach": "1 handful spinach",
+  "mayo": "mayo",
+  "olives noires (denoyautees)": "pitted black olives",
+  "onion": "1 onion",
+  "orrechiete": "orecchiette",
+  "pak choi or tenderstem broccoli": "pak choi or tenderstem broccoli",
+  "parsley": "parsley",
+  "patates": "potatoes",
+  "pitah bread": "pita bread",
+  "pois chiches": "1 can chickpeas",
+  "rice vinegar": "rice vinegar",
+  "riz": "rice",
+  "salad": "salad",
+  "shortcrust patry": "shortcrust pastry",
+  "splash plant milk": "splash plant milk",
+  "splash white wine (optional)": "splash white wine",
+  "tomates sechees": "sun-dried tomatoes",
+};
 
 let pendingDeleteCard = null;
-let recipes = seedDefaultRecipes(loadRecipes());
+let recipes = [];
 let mealPlan = loadMealPlan();
 let shoppingItems = loadShoppingList();
 let shoppingRecipes = loadShoppingRecipes();
@@ -352,6 +353,77 @@ function saveRecipes() {
   localStorage.setItem("mealPlanGuruRecipes", JSON.stringify(recipes));
 }
 
+async function loadRecipeFile() {
+  try {
+    const response = await fetch(RECIPE_DATA_URL, { cache: "no-cache" });
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const parsed = await response.json();
+    const recipeData = Array.isArray(parsed) ? parsed : parsed.recipes;
+    return Array.isArray(recipeData) ? recipeData.map(normalizeRecipeRecord).filter(Boolean) : [];
+  } catch {
+    return [];
+  }
+}
+
+function normalizeRecipeRecord(recipe) {
+  if (!recipe || !recipe.name || !recipe.ingredients) {
+    return null;
+  }
+
+  const cleanIngredients = cleanRecipeIngredients(recipe.ingredients);
+  return {
+    id: recipe.id || createRecipeId(),
+    name: String(recipe.name).trim(),
+    ingredients: cleanIngredients,
+    label: recipe.label === "noodle" ? "noodles" : recipe.label || inferRecipeLabel({ ...recipe, ingredients: cleanIngredients }),
+    photoUrl: recipe.photoUrl || "",
+  };
+}
+
+function getRecipeKey(recipe) {
+  return recipe.id || recipe.name.toLowerCase();
+}
+
+function getRecipeNameKey(recipe) {
+  return recipe.name.toLowerCase();
+}
+
+function mergeRecipeData(fileRecipes, savedRecipes) {
+  const fileById = new Map(fileRecipes.map((recipe) => [getRecipeKey(recipe), recipe]));
+  const fileByName = new Map(fileRecipes.map((recipe) => [getRecipeNameKey(recipe), recipe]));
+  const savedRecipeData = savedRecipes.map((recipe) => {
+    const baseRecipe = fileById.get(getRecipeKey(recipe)) || fileByName.get(getRecipeNameKey(recipe)) || {};
+    return normalizeRecipeRecord({
+      ...baseRecipe,
+      ...recipe,
+      ingredients: recipe.ingredients || baseRecipe.ingredients,
+      label: recipe.label || baseRecipe.label,
+      photoUrl: recipe.photoUrl || baseRecipe.photoUrl,
+    });
+  }).filter(Boolean);
+
+  if (!savedRecipeData.length) {
+    return fileRecipes;
+  }
+
+  const savedIds = new Set(savedRecipeData.map(getRecipeKey));
+  const savedNames = new Set(savedRecipeData.map(getRecipeNameKey));
+  const newFileRecipes = fileRecipes.filter((recipe) => !savedIds.has(getRecipeKey(recipe)) && !savedNames.has(getRecipeNameKey(recipe)));
+  return [...savedRecipeData, ...newFileRecipes];
+}
+
+async function loadInitialRecipes() {
+  const fileRecipes = await loadRecipeFile();
+  const savedRecipes = loadRecipes();
+  recipes = mergeRecipeData(fileRecipes, savedRecipes);
+  saveRecipes();
+  backfillRecipeLabels();
+}
+
 async function exportRecipes() {
   const backup = {
     exportedAt: new Date().toISOString(),
@@ -399,15 +471,9 @@ function importRecipesFromFile(file) {
 
       const existingNames = new Set(recipes.map((recipe) => recipe.name.toLowerCase()));
       const recipesToAdd = importedRecipes
-        .filter((recipe) => recipe.name && recipe.ingredients)
-        .filter((recipe) => !existingNames.has(recipe.name.toLowerCase()))
-        .map((recipe) => ({
-          id: recipe.id || createRecipeId(),
-          name: recipe.name,
-          ingredients: recipe.ingredients,
-          label: recipe.label || "",
-          photoUrl: recipe.photoUrl || "",
-        }));
+        .map(normalizeRecipeRecord)
+        .filter(Boolean)
+        .filter((recipe) => !existingNames.has(recipe.name.toLowerCase()));
 
       recipes = [...recipes, ...recipesToAdd];
       saveRecipes();
@@ -420,25 +486,18 @@ function importRecipesFromFile(file) {
   reader.readAsText(file);
 }
 
-function seedDefaultRecipes(savedRecipes) {
-  const seedKey = "mealPlanGuruDefaultRecipesSeeded";
-  const recipesWithPhotos = savedRecipes.map((recipe) => ({
-    ...recipe,
-    photoUrl: recipe.photoUrl || DEFAULT_RECIPE_PHOTOS[recipe.name.toLowerCase()] || "",
-  }));
 
-  if (localStorage.getItem(seedKey) === "true") {
-    localStorage.setItem("mealPlanGuruRecipes", JSON.stringify(recipesWithPhotos));
-    return recipesWithPhotos;
-  }
+function cleanRecipeIngredients(ingredients) {
+  return String(ingredients || "")
+    .split("\n")
+    .map(normalizeIngredientLine)
+    .filter((ingredient) => ingredient && !PANTRY_INGREDIENTS.has(ingredient.toLowerCase()))
+    .join("\n");
+}
 
-  const existingNames = new Set(recipesWithPhotos.map((recipe) => recipe.name.toLowerCase()));
-  const recipesToAdd = DEFAULT_RECIPES.filter((recipe) => !existingNames.has(recipe.name.toLowerCase()));
-  const nextRecipes = [...recipesWithPhotos, ...recipesToAdd];
-
-  localStorage.setItem("mealPlanGuruRecipes", JSON.stringify(nextRecipes));
-  localStorage.setItem(seedKey, "true");
-  return nextRecipes;
+function normalizeIngredientLine(ingredient) {
+  const line = String(ingredient || "").trim();
+  return INGREDIENT_HARMONISATIONS[line.toLowerCase()] || line;
 }
 
 function inferRecipeLabel(recipe) {
@@ -475,22 +534,26 @@ function backfillRecipeLabels() {
   let changed = false;
 
   recipes = recipes.map((recipe) => {
+    const cleanIngredients = cleanRecipeIngredients(recipe.ingredients);
+
     if (recipe.label === "noodle") {
       changed = true;
       return {
         ...recipe,
+        ingredients: cleanIngredients,
         label: "noodles",
       };
     }
 
-    if (recipe.label !== undefined) {
+    if (recipe.label !== undefined && recipe.ingredients === cleanIngredients) {
       return recipe;
     }
 
     changed = true;
     return {
       ...recipe,
-      label: inferRecipeLabel(recipe),
+      ingredients: cleanIngredients,
+      label: recipe.label || inferRecipeLabel({ ...recipe, ingredients: cleanIngredients }),
     };
   });
 
@@ -1154,7 +1217,7 @@ recipeForm?.addEventListener("submit", async (event) => {
 
   const formData = new FormData(recipeForm);
   const recipeName = String(formData.get("recipeName") || "").trim();
-  const ingredients = String(formData.get("ingredients") || "").trim();
+  const ingredients = cleanRecipeIngredients(formData.get("ingredients"));
   const label = String(formData.get("label") || "");
   const photoPath = normalizePhotoPath(String(formData.get("photoUrl") || ""));
 
@@ -1203,8 +1266,12 @@ recipeForm?.addEventListener("submit", async (event) => {
   closeRecipeModal();
 });
 
-showView(window.location.hash.replace("#", ""));
-backfillRecipeLabels();
-renderCalendar();
-renderRecipes();
-renderShoppingList();
+async function initializeApp() {
+  await loadInitialRecipes();
+  showView(window.location.hash.replace("#", ""));
+  renderCalendar();
+  renderRecipes();
+  renderShoppingList();
+}
+
+initializeApp();

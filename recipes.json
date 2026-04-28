@@ -1,0 +1,123 @@
+{
+  "recipes": [
+    {
+      "id": "sheet-minestrone",
+      "name": "Minestrone",
+      "ingredients": "1 onion\n1 carrot\n1 courgette\n1 celery stick\n1 can chopped tomatoes\n1 can cannellini beans\norecchiette\ngrated cheese",
+      "photoUrl": "images/minestrone.jpg",
+      "label": ""
+    },
+    {
+      "id": "sheet-sushi",
+      "name": "Sushi",
+      "ingredients": "1 pack nori\n1 pack sushi rice\nrice vinegar\nmayo\n1 pack smoked tofu\n1 avocado\n1 cucumber\n1 carrot\n1 pepper",
+      "photoUrl": "images/sushi.jpg",
+      "label": "rice"
+    },
+    {
+      "id": "sheet-chili",
+      "name": "Chili",
+      "ingredients": "1 onion\n1 pepper\n2 garlic cloves\n1 can chopped tomatoes\n1 can kidney beans\n1 can corn",
+      "photoUrl": "images/chili.jpg",
+      "label": ""
+    },
+    {
+      "id": "sheet-burritos",
+      "name": "Burritos",
+      "ingredients": "1 pack wraps\ngrated cheese\n1 pack potatoes\n1 block tofu\n1 onion\n1 thick cream\n1 pack cherry tomatoes\n1 avocado\n2 corn on the cob",
+      "photoUrl": "images/burritos.jpg",
+      "label": "potato"
+    },
+    {
+      "id": "sheet-dan-dan-noodles",
+      "name": "Dan Dan noodles",
+      "ingredients": "150 g dried wheat noodles\n100 g vegan mince\n1 tbsp soy sauce\n1 tbsp Chinese black vinegar\n1 tbsp tahini or Chinese sesame paste\n1 tsp chili oil\n1 garlic clove\n1 spring onion\n200 ml veg stock\npak choi or tenderstem broccoli",
+      "photoUrl": "images/dan-dan-noodles.jpg",
+      "label": "noodles"
+    },
+    {
+      "id": "sheet-quiche",
+      "name": "Quiche",
+      "ingredients": "shortcrust pastry\ncream\ncornflour\ntofu\ngrated cheese\nsalad",
+      "photoUrl": "images/quiche.jpg",
+      "label": "quiche"
+    },
+    {
+      "id": "sheet-shepherds-pie",
+      "name": "Shepherd's pie",
+      "ingredients": "1 onion\n1 carrot\n1 celery stick\n100 g mushrooms\n200 g lentils\n200 ml veg stock\n1 tbsp tomato puree\n1/2 tsp thyme\n1/2 tsp rosemary\n400 g potatoes\nsplash plant milk\n1 tbsp vegan butter",
+      "photoUrl": "images/shepherd-s-pie.jpg",
+      "label": "potato"
+    },
+    {
+      "id": "sheet-orzo-meatball-soup",
+      "name": "Orzo Meatball Soup",
+      "ingredients": "1 onion\n1 garlic clove\n1 can chopped tomatoes\n500 ml veg stock\n60 g orzo\n6-8 vegan meatballs\n1 handful spinach",
+      "photoUrl": "images/orzo-meatball-soup.jpg",
+      "label": "soup"
+    },
+    {
+      "id": "sheet-spaghetti-bolognese",
+      "name": "Spaghetti Bolognese",
+      "ingredients": "150 g spaghetti\n1 onion\n1 carrot\n1 celery stick\n2 garlic cloves\n250 g vegan mince or lentils\n1 can chopped tomatoes\n1 tbsp tomato puree\n1 tsp oregano\n1/2 tsp thyme",
+      "photoUrl": "images/spaghetti-bolognese.webp",
+      "label": "pasta"
+    },
+    {
+      "id": "sheet-chickpea-curry",
+      "name": "Chickpea Curry",
+      "ingredients": "1 onion\n2 garlic cloves\n1 tsp grated ginger\n1 tbsp curry powder\n1 can chopped tomatoes\n1 can chickpeas\n100 ml coconut milk\n1 handful spinach\ncoriander",
+      "photoUrl": "images/chickpea-curry.jpg",
+      "label": ""
+    },
+    {
+      "id": "sheet-dahl",
+      "name": "Dahl",
+      "ingredients": "1 onion\n2 garlic cloves\n1 tsp grated ginger\n1 tsp turmeric\n1 tsp cumin seeds\n150 g red lentils\n500 ml veg stock\n200 ml coconut milk\ncoriander",
+      "photoUrl": "images/dahl.jpg",
+      "label": ""
+    },
+    {
+      "id": "sheet-cassoulet",
+      "name": "Cassoulet",
+      "ingredients": "1 onion\n1 carrot\n1 celery stick\n2 garlic cloves\n1 can chopped tomatoes\n1 can cannellini beans\n1 can butter beans\n200 ml veg stock\n1 tsp thyme\n1 bay leaf",
+      "photoUrl": "images/cassoulet.webp",
+      "label": ""
+    },
+    {
+      "id": "sheet-marry-me-lentils",
+      "name": "Marry Me Lentils",
+      "ingredients": "150 g pasta\n2 garlic cloves\n100 g red lentils\n200 ml veg stock\n200 ml coconut milk or oat cream\n1 tbsp tomato puree\n1 tsp paprika\n1/2 tsp chili flakes\n1 handful spinach",
+      "photoUrl": "images/marry-me-lentils.webp",
+      "label": "pasta"
+    },
+    {
+      "id": "sheet-risotto",
+      "name": "Risotto",
+      "ingredients": "1 onion\n1 garlic clove\n150 g arborio rice\n500 ml veg stock\n150 g mushrooms\nsplash white wine\n2 tbsp nutritional yeast\n1 tbsp vegan butter\nparsley",
+      "photoUrl": "images/risotto.jpg",
+      "label": "rice"
+    },
+    {
+      "id": "sheet-rice-ratatouille",
+      "name": "Rice & Ratatouille",
+      "ingredients": "100 g rice\n1 onion\n1 courgette\n1 aubergine\n1 red pepper\n2 garlic cloves\n1 can chopped tomatoes\n1/2 tsp thyme\n1/2 tsp oregano",
+      "photoUrl": "images/rice-ratatouille.jpg",
+      "label": "rice"
+    },
+    {
+      "id": "sheet-korma",
+      "name": "Korma",
+      "ingredients": "rice\ncashews\ncoconut milk\n1 onion\n1 can chickpeas\n1 can butter beans\ntomato puree",
+      "photoUrl": "images/korma.jpg",
+      "label": "rice"
+    },
+    {
+      "id": "sheet-pitah-patate-salade",
+      "name": "Pitah & Patate Salade",
+      "ingredients": "potatoes\npita bread\nsun-dried tomatoes\npitted black olives\ncream cheese",
+      "photoUrl": "images/pita.jpg",
+      "label": "potato"
+    }
+  ]
+}
