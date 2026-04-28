@@ -126,9 +126,9 @@ body:not(.locked) .password-screen {
 }
 
 .brand {
-  color: var(--ink);
-  font-size: 1.1rem;
-  font-weight: 600;
+  color: #337467;
+  font-size: 1.32rem;
+  font-weight: 700;
   text-decoration: none;
 }
 
