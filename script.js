@@ -32,105 +32,110 @@ const DEFAULT_RECIPES = [
     id: "sheet-minestrone",
     name: "Minestrone",
     ingredients: "1 Onion\n1 Carrot\n1 Courgette\n1 Celery\n1 Can Mutti\n1 Canelini beans\nOrrechiete\nGrated Cheese",
-    photoUrl: "",
+    photoUrl: "images/minestrone.jpg",
   },
   {
     id: "sheet-sushi",
     name: "Sushi",
     ingredients: "1 Pack Nori\n1 Pack Sushi Rice\nRice Vinegar\nMayo\n1 Pack Smoked Tofu\n1 Avocat\n1 Cucumber\n1 Carrot\n1 Pepper",
-    photoUrl: "",
+    photoUrl: "images/sushi.jpg",
   },
   {
     id: "sheet-chili",
     name: "Chili",
     ingredients: "1 Onion\n1 Pepper\n2 garlic cloves\n1 Can Mutti\n1 Can Kidney Beans\n1 Can Corn",
-    photoUrl: "",
+    photoUrl: "images/chili.jpg",
   },
   {
     id: "sheet-burritos",
     name: "Burritos",
     ingredients: "1 Pack Wraps\nGrated Cheese\n1 Pack Potatoes\n1 Block Tofu\n1 Onion\n1 Thick Cream\n1 Pack Cherry Tomatoes\n1 Avocat\n2 Corn on the Cob",
-    photoUrl: "",
+    photoUrl: "images/burritos.jpg",
   },
   {
     id: "sheet-dan-dan-noodles",
     name: "Dan Dan noodles",
     ingredients: "150g dried wheat noodles\n100g vegan mince (soy or mushroom-based)\n1 tbsp soy sauce\n1 tbsp Chinese black vinegar\n1 tbsp tahini or Chinese sesame paste\n1 tsp chili oil\n1 garlic clove\n1 spring onion\n200ml veg stock\npak choi or tenderstem broccoli",
-    photoUrl: "",
+    photoUrl: "images/dan-dan-noodles.jpg",
   },
   {
     id: "sheet-quiche",
     name: "Quiche",
     ingredients: "Shortcrust Patry\nCream\nCornflour\nGood Tofu\nGrated Cheese\nSalad",
-    photoUrl: "",
+    photoUrl: "images/quiche.jpg",
   },
   {
     id: "sheet-shepherds-pie",
     name: "Shepherd's pie",
     ingredients: "1 tbsp olive oil\n1 small onion\n1 carrot\n1 celery stick\n100g mushrooms\n200g lentils (cooked or tinned)\n200ml veg stock\n1 tbsp tomato puree\n1/2 tsp thyme\n1/2 tsp rosemary\n400g potatoes\nsplash plant milk\n1 tbsp vegan butter",
-    photoUrl: "",
+    photoUrl: "images/shepherd-s-pie.jpg",
   },
   {
     id: "sheet-orzo-meatball-soup",
     name: "Orzo Meatball Soup",
     ingredients: "1 tbsp olive oil\n1 small onion\n1 garlic clove\n400g tin chopped tomatoes\n500ml veg stock\n60g orzo\n6-8 vegan meatballs\nhandful spinach\nsalt & pepper",
-    photoUrl: "",
+    photoUrl: "images/orzo-meatball-soup.jpg",
   },
   {
     id: "sheet-spaghetti-bolognese",
     name: "Spaghetti Bolognese",
     ingredients: "150g spaghetti\n1 tbsp olive oil\n1 onion\n1 carrot\n1 celery stick\n2 garlic cloves\n250g vegan mince or lentils\n400g tin chopped tomatoes\n1 tbsp tomato puree\n1 tsp oregano\n1/2 tsp thyme\nsalt & pepper",
-    photoUrl: "",
+    photoUrl: "images/spaghetti-bolognese.webp",
   },
   {
     id: "sheet-chickpea-curry",
     name: "Chickpea Curry",
     ingredients: "1 tbsp oil\n1 onion\n2 garlic cloves\n1 tsp grated ginger\n1 tbsp curry powder\n400g tin chopped tomatoes\n400g tin chickpeas\n100ml coconut milk\nhandful spinach\ncoriander (optional)\nsalt & pepper",
-    photoUrl: "",
+    photoUrl: "images/chickpea-curry.jpg",
   },
   {
     id: "sheet-dahl",
     name: "Dahl",
     ingredients: "1 tbsp oil\n1 onion\n2 garlic cloves\n1 tsp grated ginger\n1 tsp turmeric\n1 tsp cumin seeds\n150g red lentils\n500ml veg stock\n200ml coconut milk\ncoriander (optional)\nsalt",
-    photoUrl: "",
+    photoUrl: "images/dahl.jpg",
   },
   {
     id: "sheet-cassoulet",
     name: "Cassoulet",
     ingredients: "1 tbsp oil\n1 onion\n1 carrot\n1 celery stick\n2 garlic cloves\n400g tin chopped tomatoes\n400g tin cannellini beans\n400g tin butter beans\n200ml veg stock\n1 tsp thyme\n1 bay leaf\nsalt & pepper",
-    photoUrl: "",
+    photoUrl: "images/cassoulet.webp",
   },
   {
     id: "sheet-marry-me-lentils",
     name: "Marry Me Lentils",
     ingredients: "150g pasta (penne or rigatoni)\n1 tbsp oil\n2 garlic cloves\n100g red lentils\n200ml veg stock\n200ml coconut milk or oat cream\n1 tbsp tomato puree\n1 tsp paprika\n1/2 tsp chili flakes\nhandful spinach",
-    photoUrl: "",
+    photoUrl: "images/marry-me-lentils.webp",
   },
   {
     id: "sheet-risotto",
     name: "Risotto",
     ingredients: "1 tbsp oil\n1 onion\n1 garlic clove\n150g arborio rice\n500ml veg stock\n150g mushrooms\nsplash white wine (optional)\n2 tbsp nutritional yeast\n1 tbsp vegan butter\nparsley",
-    photoUrl: "",
+    photoUrl: "images/risotto.jpg",
   },
   {
     id: "sheet-rice-ratatouille",
     name: "Rice & Ratatouille",
     ingredients: "100g rice\n1 tbsp olive oil\n1 onion\n1 courgette\n1 aubergine\n1 red pepper\n2 garlic cloves\n400g tin chopped tomatoes\n1/2 tsp thyme\n1/2 tsp oregano\nsalt & pepper",
-    photoUrl: "",
+    photoUrl: "images/rice-ratatouille.jpg",
   },
   {
     id: "sheet-korma",
     name: "Korma",
     ingredients: "Riz\nCashews\nCoconut Milk\nOnion\nPois Chiches\nButter Beans\nConcentre de Tomate",
-    photoUrl: "",
+    photoUrl: "images/korma.jpg",
   },
   {
     id: "sheet-pitah-patate-salade",
     name: "Pitah & Patate Salade",
     ingredients: "Patates\nPitah Bread\nTomates Sechees\nOlives Noires (Denoyautees)\nFromage a tartiner",
-    photoUrl: "",
+    photoUrl: "images/pita.jpg",
   },
 ];
+
+const DEFAULT_RECIPE_PHOTOS = DEFAULT_RECIPES.reduce((photos, recipe) => {
+  photos[recipe.name.toLowerCase()] = recipe.photoUrl;
+  return photos;
+}, {});
 
 let pendingDeleteCard = null;
 let recipes = seedDefaultRecipes(loadRecipes());
@@ -417,14 +422,19 @@ function importRecipesFromFile(file) {
 
 function seedDefaultRecipes(savedRecipes) {
   const seedKey = "mealPlanGuruDefaultRecipesSeeded";
+  const recipesWithPhotos = savedRecipes.map((recipe) => ({
+    ...recipe,
+    photoUrl: recipe.photoUrl || DEFAULT_RECIPE_PHOTOS[recipe.name.toLowerCase()] || "",
+  }));
 
   if (localStorage.getItem(seedKey) === "true") {
-    return savedRecipes;
+    localStorage.setItem("mealPlanGuruRecipes", JSON.stringify(recipesWithPhotos));
+    return recipesWithPhotos;
   }
 
-  const existingNames = new Set(savedRecipes.map((recipe) => recipe.name.toLowerCase()));
+  const existingNames = new Set(recipesWithPhotos.map((recipe) => recipe.name.toLowerCase()));
   const recipesToAdd = DEFAULT_RECIPES.filter((recipe) => !existingNames.has(recipe.name.toLowerCase()));
-  const nextRecipes = [...savedRecipes, ...recipesToAdd];
+  const nextRecipes = [...recipesWithPhotos, ...recipesToAdd];
 
   localStorage.setItem("mealPlanGuruRecipes", JSON.stringify(nextRecipes));
   localStorage.setItem(seedKey, "true");
