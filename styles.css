@@ -310,7 +310,6 @@ body:not(.locked) .password-screen {
   border: 1px solid var(--line);
   border-radius: 6px;
   background: #ffffff;
-  overflow: hidden;
   text-align: left;
 }
 
@@ -330,6 +329,8 @@ body:not(.locked) .password-screen {
   display: grid;
   grid-template-rows: 1fr 1fr;
   min-height: 220px;
+  overflow: hidden;
+  border-radius: inherit;
 }
 
 .meal-slot {
@@ -440,12 +441,9 @@ body:not(.locked) .password-screen {
 
 .meal-dropdown {
   position: absolute;
-  left: 10px;
-  right: 10px;
-  top: 72px;
-  z-index: 20;
+  z-index: 100;
   display: grid;
-  max-height: 180px;
+  max-height: 220px;
   overflow-y: auto;
   padding: 6px;
   border: 1px solid var(--line);

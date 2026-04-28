@@ -749,15 +749,17 @@ function closeMealDropdowns() {
 }
 
 function toggleMealDropdown(mealSlot, dateKey, mealKey) {
-  const existingDropdown = mealSlot.querySelector(".meal-dropdown");
+  const existingDropdown = document.querySelector(".meal-dropdown");
+  const isSameSlot = existingDropdown?.dataset.slotId === getMealPlanKey(dateKey, mealKey);
   closeMealDropdowns();
 
-  if (existingDropdown) {
+  if (isSameSlot) {
     return;
   }
 
   const dropdown = document.createElement("span");
   dropdown.className = "meal-dropdown";
+  dropdown.dataset.slotId = getMealPlanKey(dateKey, mealKey);
 
   ["Leftovers", "Eating Out"].forEach((builtInOption) => {
     const builtInButton = document.createElement("button");
@@ -794,7 +796,23 @@ function toggleMealDropdown(mealSlot, dateKey, mealKey) {
     });
   }
 
-  mealSlot.append(dropdown);
+  document.body.append(dropdown);
+  positionMealDropdown(dropdown, mealSlot);
+}
+
+function positionMealDropdown(dropdown, mealSlot) {
+  const rect = mealSlot.getBoundingClientRect();
+  const gap = 6;
+  const dropdownHeight = Math.min(dropdown.scrollHeight, 220);
+  const roomBelow = window.innerHeight - rect.bottom;
+  const top =
+    roomBelow >= dropdownHeight + gap
+      ? rect.bottom + window.scrollY + gap
+      : Math.max(window.scrollY + gap, rect.top + window.scrollY - dropdownHeight - gap);
+
+  dropdown.style.left = `${rect.left + window.scrollX + 10}px`;
+  dropdown.style.top = `${top}px`;
+  dropdown.style.width = `${Math.max(140, rect.width - 20)}px`;
 }
 
 function createRecipeId() {
