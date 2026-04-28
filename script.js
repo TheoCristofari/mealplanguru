@@ -260,18 +260,7 @@ function renderCalendar() {
         const selectedRecipeText = document.createElement("span");
         selectedRecipeText.className = "planned-recipe-name";
         selectedRecipeText.textContent = selectedRecipeName;
-
-        const editMealButton = document.createElement("button");
-        editMealButton.className = "edit-meal-button";
-        editMealButton.type = "button";
-        editMealButton.setAttribute("aria-label", `Change ${mealName} recipe`);
-        editMealButton.innerHTML = `
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3Z" stroke-width="2" stroke-linejoin="round"></path>
-            <path d="M14 7l3 3" stroke-width="2" stroke-linecap="round"></path>
-          </svg>
-        `;
-        editMealButton.addEventListener("click", (event) => {
+        selectedRecipe.addEventListener("click", (event) => {
           event.stopPropagation();
           toggleMealDropdown(mealSlot, dayKey, mealKey);
         });
@@ -295,7 +284,7 @@ function renderCalendar() {
           renderCalendar();
         });
 
-        selectedRecipe.append(selectedRecipeText, editMealButton, removeMealButton);
+        selectedRecipe.append(selectedRecipeText, removeMealButton);
         mealSlot.append(selectedRecipe);
       } else {
         mealSlot.append(addMealButton);

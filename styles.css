@@ -411,7 +411,7 @@ body:not(.locked) .password-screen {
   --planned-text: var(--accent);
   --planned-bg: var(--accent-soft);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 24px 24px;
+  grid-template-columns: minmax(0, 1fr) 24px;
   align-items: center;
   gap: 6px;
   padding: 7px 8px;
@@ -421,6 +421,7 @@ body:not(.locked) .password-screen {
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
   font-size: 0.82rem;
   font-weight: 700;
+  cursor: pointer;
 }
 
 .planned-recipe-built-in {
@@ -464,23 +465,6 @@ body:not(.locked) .password-screen {
   white-space: nowrap;
 }
 
-.edit-meal-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border: 1px solid #b7d9d0;
-  border-radius: 5px;
-  color: var(--accent);
-  background: #ffffff;
-  cursor: pointer;
-}
-
-.edit-meal-button:hover {
-  background: #eef8f5;
-}
-
 .remove-meal-button {
   display: inline-flex;
   align-items: center;
@@ -498,7 +482,6 @@ body:not(.locked) .password-screen {
   background: #fee2e2;
 }
 
-.edit-meal-button svg,
 .remove-meal-button svg {
   width: 13px;
   height: 13px;
