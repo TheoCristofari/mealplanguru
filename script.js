@@ -39,6 +39,16 @@ const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_r_My8zwj297QswRnj9Dvmw_6vMeJBhj
 const SUPABASE_RECIPE_TABLE = "recipes";
 const SUPABASE_IMAGE_BUCKET = "recipe-images";
 const supabaseClient = window.supabase?.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) || null;
+const RECIPE_LABEL_ORDER = ["pasta", "rice", "potato", "noodles", "soup", "quiche", ""];
+const RECIPE_LABEL_NAMES = {
+  pasta: "Pasta",
+  rice: "Rice",
+  potato: "Potato",
+  noodles: "Noodles",
+  soup: "Soup",
+  quiche: "Quiche",
+  "": "Other",
+};
 
 
 const PANTRY_INGREDIENTS = new Set([
@@ -757,6 +767,8 @@ function toggleMealDropdown(mealSlot, dateKey, mealKey) {
   dropdown.className = "meal-dropdown";
   dropdown.dataset.slotId = getMealPlanKey(dateKey, mealKey);
 
+  const builtInGroup = document.createElement("span");
+  builtInGroup.className = "meal-dropdown-group meal-dropdown-built-ins";
   ["Leftovers", "Eating Out"].forEach((builtInOption) => {
     const builtInButton = document.createElement("button");
     builtInButton.className = "meal-dropdown-item meal-dropdown-built-in";
@@ -769,8 +781,9 @@ function toggleMealDropdown(mealSlot, dateKey, mealKey) {
       closeMealDropdowns();
       renderCalendar();
     });
-    dropdown.append(builtInButton);
+    builtInGroup.append(builtInButton);
   });
+  dropdown.append(builtInGroup);
 
   if (recipes.length === 0) {
     const emptyItem = document.createElement("span");
@@ -778,19 +791,47 @@ function toggleMealDropdown(mealSlot, dateKey, mealKey) {
     emptyItem.textContent = "No saved recipes yet";
     dropdown.append(emptyItem);
   } else {
-    recipes.forEach((recipe) => {
-      const recipeButton = document.createElement("button");
-      recipeButton.className = "meal-dropdown-item";
-      recipeButton.type = "button";
-      recipeButton.textContent = recipe.name;
-      recipeButton.addEventListener("click", (event) => {
-        event.stopPropagation();
-        mealPlan[getMealPlanKey(dateKey, mealKey)] = recipe.name;
-        saveMealPlan();
-        closeMealDropdowns();
-        renderCalendar();
-      });
-      dropdown.append(recipeButton);
+    const recipesByLabel = recipes.reduce((groups, recipe) => {
+      const label = RECIPE_LABEL_ORDER.includes(recipe.label) ? recipe.label : "";
+      groups[label] ||= [];
+      groups[label].push(recipe);
+      return groups;
+    }, {});
+
+    RECIPE_LABEL_ORDER.forEach((label) => {
+      const labelRecipes = recipesByLabel[label] || [];
+
+      if (labelRecipes.length === 0) {
+        return;
+      }
+
+      const group = document.createElement("span");
+      group.className = "meal-dropdown-group";
+
+      const groupTitle = document.createElement("span");
+      groupTitle.className = "meal-dropdown-heading";
+      groupTitle.textContent = RECIPE_LABEL_NAMES[label];
+      group.append(groupTitle);
+
+      labelRecipes
+        .slice()
+        .sort((first, second) => first.name.localeCompare(second.name))
+        .forEach((recipe) => {
+          const recipeButton = document.createElement("button");
+          recipeButton.className = `meal-dropdown-item meal-dropdown-recipe meal-dropdown-recipe-${recipe.label || "other"}`;
+          recipeButton.type = "button";
+          recipeButton.textContent = recipe.name;
+          recipeButton.addEventListener("click", (event) => {
+            event.stopPropagation();
+            mealPlan[getMealPlanKey(dateKey, mealKey)] = recipe.name;
+            saveMealPlan();
+            closeMealDropdowns();
+            renderCalendar();
+          });
+          group.append(recipeButton);
+        });
+
+      dropdown.append(group);
     });
   }
 
@@ -801,16 +842,22 @@ function toggleMealDropdown(mealSlot, dateKey, mealKey) {
 function positionMealDropdown(dropdown, mealSlot) {
   const rect = mealSlot.getBoundingClientRect();
   const gap = 6;
-  const dropdownHeight = Math.min(dropdown.scrollHeight, 220);
+  const dropdownHeight = dropdown.scrollHeight;
   const roomBelow = window.innerHeight - rect.bottom;
   const top =
     roomBelow >= dropdownHeight + gap
       ? rect.bottom + window.scrollY + gap
       : Math.max(window.scrollY + gap, rect.top + window.scrollY - dropdownHeight - gap);
 
-  dropdown.style.left = `${rect.left + window.scrollX + 10}px`;
+  const width = Math.min(720, Math.max(520, window.innerWidth - 32));
+  const left = Math.min(
+    Math.max(16, rect.left + window.scrollX + 10),
+    window.scrollX + window.innerWidth - width - 16
+  );
+
+  dropdown.style.left = `${left}px`;
   dropdown.style.top = `${top}px`;
-  dropdown.style.width = `${Math.max(140, rect.width - 20)}px`;
+  dropdown.style.width = `${width}px`;
 }
 
 function createRecipeId() {

@@ -495,12 +495,35 @@ body:not(.locked) .password-screen {
   position: absolute;
   z-index: 100;
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: 10px;
   overflow: visible;
-  padding: 6px;
+  padding: 10px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #ffffff;
   box-shadow: 0 16px 40px rgba(17, 24, 39, 0.14);
+}
+
+.meal-dropdown-group {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.meal-dropdown-built-ins {
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.meal-dropdown-heading {
+  padding: 4px 8px 2px;
+  color: var(--muted);
+  font-family: Figtree, "Segoe UI", Arial, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .meal-dropdown-item,
@@ -515,6 +538,12 @@ body:not(.locked) .password-screen {
   font-size: 0.82rem;
   font-weight: 700;
   text-align: left;
+}
+
+.meal-dropdown-recipe {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .meal-dropdown-item {
