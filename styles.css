@@ -296,9 +296,6 @@ body:not(.locked) .password-screen {
   align-items: center;
   justify-content: center;
   min-height: 34px;
-  border-right: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  border-top: 1px solid var(--line);
   color: #111827;
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
   font-size: 0.75rem;
