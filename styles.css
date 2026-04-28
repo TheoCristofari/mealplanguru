@@ -205,7 +205,7 @@ body:not(.locked) .password-screen {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 28px;
+  margin-top: 28px;
 }
 
 .calendar-title,
@@ -341,10 +341,6 @@ body:not(.locked) .password-screen {
   align-content: start;
   gap: 8px;
   padding: 10px;
-}
-
-.meal-slot + .meal-slot {
-  border-top: 1px solid var(--line);
 }
 
 .meal-label {
