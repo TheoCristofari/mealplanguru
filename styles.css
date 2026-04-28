@@ -270,6 +270,8 @@ body:not(.locked) .password-screen {
   background: #ffffff;
   box-shadow: 0 1px 4px rgba(17, 24, 39, 0.08);
   font: inherit;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .calendar-actions .update-shopping-button {
@@ -406,17 +408,54 @@ body:not(.locked) .password-screen {
 }
 
 .planned-recipe {
+  --planned-text: var(--accent);
+  --planned-bg: var(--accent-soft);
   display: grid;
   grid-template-columns: minmax(0, 1fr) 24px 24px;
   align-items: center;
   gap: 6px;
   padding: 7px 8px;
   border-radius: 6px;
-  color: var(--accent);
-  background: var(--accent-soft);
+  color: var(--planned-text);
+  background: var(--planned-bg);
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
   font-size: 0.82rem;
   font-weight: 700;
+}
+
+.planned-recipe-built-in {
+  --planned-text: var(--accent);
+  --planned-bg: var(--accent-soft);
+}
+
+.planned-recipe-pasta {
+  --planned-text: #7c2d12;
+  --planned-bg: #ffedd5;
+}
+
+.planned-recipe-rice {
+  --planned-text: #075985;
+  --planned-bg: #e0f2fe;
+}
+
+.planned-recipe-potato {
+  --planned-text: #713f12;
+  --planned-bg: #fef3c7;
+}
+
+.planned-recipe-noodles {
+  --planned-text: #6d28d9;
+  --planned-bg: #ede9fe;
+}
+
+.planned-recipe-soup {
+  --planned-text: #166534;
+  --planned-bg: #dcfce7;
+}
+
+.planned-recipe-quiche {
+  --planned-text: #9d174d;
+  --planned-bg: #fce7f3;
 }
 
 .planned-recipe-name {

@@ -249,6 +249,13 @@ function renderCalendar() {
       if (selectedRecipeName) {
         const selectedRecipe = document.createElement("span");
         selectedRecipe.className = "planned-recipe";
+        const plannedRecipe = recipes.find((recipe) => recipe.name === selectedRecipeName);
+        const plannedLabel = plannedRecipe?.label;
+        if (plannedLabel) {
+          selectedRecipe.classList.add(`planned-recipe-${plannedLabel}`);
+        } else if (selectedRecipeName === "Leftovers" || selectedRecipeName === "Eating Out") {
+          selectedRecipe.classList.add("planned-recipe-built-in");
+        }
 
         const selectedRecipeText = document.createElement("span");
         selectedRecipeText.className = "planned-recipe-name";
@@ -770,6 +777,7 @@ function toggleMealDropdown(mealSlot, dateKey, mealKey) {
       event.stopPropagation();
       mealPlan[getMealPlanKey(dateKey, mealKey)] = builtInOption;
       saveMealPlan();
+      closeMealDropdowns();
       renderCalendar();
     });
     dropdown.append(builtInButton);
@@ -790,6 +798,7 @@ function toggleMealDropdown(mealSlot, dateKey, mealKey) {
         event.stopPropagation();
         mealPlan[getMealPlanKey(dateKey, mealKey)] = recipe.name;
         saveMealPlan();
+        closeMealDropdowns();
         renderCalendar();
       });
       dropdown.append(recipeButton);
