@@ -38,3 +38,32 @@ create policy "Anyone can delete recipes"
 on public.recipes for delete
 to anon
 using (true);
+
+insert into storage.buckets (id, name, public)
+values ('recipe-images', 'recipe-images', true)
+on conflict (id) do update set public = true;
+
+drop policy if exists "Anyone can read recipe images" on storage.objects;
+create policy "Anyone can read recipe images"
+on storage.objects for select
+to anon
+using (bucket_id = 'recipe-images');
+
+drop policy if exists "Anyone can upload recipe images" on storage.objects;
+create policy "Anyone can upload recipe images"
+on storage.objects for insert
+to anon
+with check (bucket_id = 'recipe-images');
+
+drop policy if exists "Anyone can update recipe images" on storage.objects;
+create policy "Anyone can update recipe images"
+on storage.objects for update
+to anon
+using (bucket_id = 'recipe-images')
+with check (bucket_id = 'recipe-images');
+
+drop policy if exists "Anyone can delete recipe images" on storage.objects;
+create policy "Anyone can delete recipe images"
+on storage.objects for delete
+to anon
+using (bucket_id = 'recipe-images');

@@ -37,6 +37,7 @@ const RECIPE_DATA_URL = "recipes.json";
 const SUPABASE_URL = "https://beguxpppyngjphetlviv.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_r_My8zwj297QswRnj9Dvmw_6vMeJBhj";
 const SUPABASE_RECIPE_TABLE = "recipes";
+const SUPABASE_IMAGE_BUCKET = "recipe-images";
 const supabaseClient = window.supabase?.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) || null;
 
 
@@ -319,7 +320,6 @@ function openRecipeModal(recipe = null) {
   if (recipe) {
     recipeForm.elements.recipeName.value = recipe.name;
     recipeForm.elements.ingredients.value = recipe.ingredients;
-    recipeForm.elements.photoUrl.value = recipe.photoUrl ? recipe.photoUrl.replace(/^images\//, "") : "";
     recipeModalTitle.textContent = "Edit recipe";
     recipeSubmitButton.textContent = "Save";
   } else {
@@ -485,6 +485,38 @@ function normalizeRecipeRecord(recipe) {
     label: recipe.label === "noodle" ? "noodles" : recipe.label || inferRecipeLabel({ ...recipe, ingredients: cleanIngredients }),
     photoUrl: recipe.photoUrl || "",
   };
+}
+
+function slugifyFilename(value) {
+  return String(value || "recipe")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80) || "recipe";
+}
+
+async function uploadRecipePhoto(file, recipe) {
+  if (!supabaseClient || !file || file.size === 0) {
+    return "";
+  }
+
+  const extension = file.name.includes(".") ? file.name.split(".").pop().toLowerCase() : "jpg";
+  const safeName = slugifyFilename(recipe.name);
+  const path = `${recipe.id}/${safeName}-${Date.now()}.${extension}`;
+  const { error } = await supabaseClient.storage
+    .from(SUPABASE_IMAGE_BUCKET)
+    .upload(path, file, {
+      cacheControl: "31536000",
+      upsert: false,
+    });
+
+  if (error) {
+    throw error;
+  }
+
+  const { data } = supabaseClient.storage.from(SUPABASE_IMAGE_BUCKET).getPublicUrl(path);
+  return data.publicUrl;
 }
 
 function getRecipeKey(recipe) {
@@ -1068,20 +1100,6 @@ function setShoppingView(view) {
   renderShoppingList();
 }
 
-function normalizePhotoPath(value) {
-  const path = value.trim();
-
-  if (!path) {
-    return "";
-  }
-
-  if (path.startsWith("http://") || path.startsWith("https://")) {
-    return path;
-  }
-
-  return path.startsWith("images/") ? path : `images/${path}`;
-}
-
 function createRecipeCard(recipe) {
   const card = document.createElement("article");
   card.className = "recipe-card recipe-card-filled";
@@ -1343,14 +1361,32 @@ recipeForm?.addEventListener("submit", async (event) => {
   const recipeName = String(formData.get("recipeName") || "").trim();
   const ingredients = cleanRecipeIngredients(formData.get("ingredients"));
   const label = String(formData.get("label") || "");
-  const photoPath = normalizePhotoPath(String(formData.get("photoUrl") || ""));
+  const photoFile = formData.get("photoFile");
 
   if (!recipeName || !ingredients) {
     return;
   }
 
+  const recipeId = editingRecipeId || createRecipeId();
+  const existingRecipe = editingRecipeId ? recipes.find((recipe) => recipe.id === editingRecipeId) : null;
+  const draftRecipe = {
+    id: recipeId,
+    name: recipeName,
+    ingredients,
+    label,
+    photoUrl: existingRecipe?.photoUrl || "",
+  };
+  let photoUrl = draftRecipe.photoUrl;
+
+  try {
+    photoUrl = await uploadRecipePhoto(photoFile, draftRecipe) || photoUrl;
+  } catch {
+    alert("The photo could not be uploaded. Please check Supabase Storage and try again.");
+    return;
+  }
+
   if (editingRecipeId) {
-    const oldRecipe = recipes.find((recipe) => recipe.id === editingRecipeId);
+    const oldRecipe = existingRecipe;
     recipes = recipes.map((recipe) => {
       if (recipe.id !== editingRecipeId) {
         return recipe;
@@ -1361,7 +1397,7 @@ recipeForm?.addEventListener("submit", async (event) => {
         name: recipeName,
         ingredients,
         label,
-        photoUrl: photoPath || recipe.photoUrl,
+        photoUrl,
       };
     });
 
@@ -1375,11 +1411,11 @@ recipeForm?.addEventListener("submit", async (event) => {
     }
   } else {
     recipes.unshift({
-      id: createRecipeId(),
+      id: recipeId,
       name: recipeName,
       ingredients,
       label,
-      photoUrl: photoPath,
+      photoUrl,
     });
   }
 
