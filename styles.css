@@ -26,6 +26,89 @@ body {
   background: var(--bg);
 }
 
+body.locked {
+  overflow: hidden;
+}
+
+body.locked .topbar,
+body.locked .page,
+body.locked .modal-overlay {
+  display: none;
+}
+
+.password-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #f8fafc;
+  font-family: Figtree, "Segoe UI", Arial, sans-serif;
+}
+
+body:not(.locked) .password-screen {
+  display: none;
+}
+
+.password-card {
+  width: min(100%, 360px);
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 18px 60px rgba(17, 24, 39, 0.08);
+}
+
+.password-card h1 {
+  margin: 0 0 24px;
+  font-size: 1.45rem;
+  font-weight: 650;
+  text-align: center;
+}
+
+.password-card label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.password-row {
+  display: flex;
+  gap: 8px;
+}
+
+.password-row input {
+  min-width: 0;
+  flex: 1;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+}
+
+.password-row button {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 6px;
+  color: #ffffff;
+  background: var(--accent);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.password-error {
+  margin: 12px 0 0;
+  color: #dc2626;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
 .topbar {
   position: sticky;
   top: 0;
@@ -71,6 +154,30 @@ body {
 .nav-link.active {
   color: var(--accent);
   background: var(--accent-soft);
+}
+
+.lock-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.lock-button:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.lock-button svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
 }
 
 .page {

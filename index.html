@@ -6,13 +6,31 @@
     <title>Meal Plan Guru</title>
     <link rel="stylesheet" href="styles.css">
   </head>
-  <body>
+  <body class="locked">
+    <div class="password-screen" data-password-screen>
+      <form class="password-card" data-password-form>
+        <h1>Meal Plan Guru</h1>
+        <label for="site-password">Password</label>
+        <div class="password-row">
+          <input id="site-password" name="sitePassword" type="password" autocomplete="current-password" data-password-input>
+          <button type="submit">Enter</button>
+        </div>
+        <p class="password-error" data-password-error hidden>Wrong password.</p>
+      </form>
+    </div>
+
     <header class="topbar">
       <a class="brand" href="#calendar" data-view-link="calendar">Meal Plan Guru</a>
       <nav class="topnav" aria-label="Main navigation">
         <a class="nav-link active" href="#calendar" aria-current="page" data-view-link="calendar">Calendar</a>
         <a class="nav-link" href="#recipes" data-view-link="recipes">Recipes</a>
         <a class="nav-link" href="#shopping" data-view-link="shopping">Shopping</a>
+        <button class="lock-button" type="button" aria-label="Lock meal planner" title="Lock meal planner" data-lock-site>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="5" y="10" width="14" height="10" rx="2" stroke-width="2"></rect>
+            <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        </button>
       </nav>
     </header>
 
@@ -150,6 +168,7 @@
       </section>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
   </body>
 </html>

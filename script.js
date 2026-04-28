@@ -26,7 +26,18 @@ const importRecipesFile = document.querySelector("[data-import-recipes-file]");
 const labelInput = document.querySelector("[data-label-input]");
 const labelOptions = document.querySelectorAll("[data-label-option]");
 const recipeFilterButtons = document.querySelectorAll("[data-recipe-filter]");
+const passwordScreen = document.querySelector("[data-password-screen]");
+const passwordForm = document.querySelector("[data-password-form]");
+const passwordInput = document.querySelector("[data-password-input]");
+const passwordError = document.querySelector("[data-password-error]");
+const lockSiteButton = document.querySelector("[data-lock-site]");
+const SITE_PASSWORD = "guru";
+const SITE_UNLOCK_KEY = "mealPlanGuruUnlocked";
 const RECIPE_DATA_URL = "recipes.json";
+const SUPABASE_URL = "https://beguxpppyngjphetlviv.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_r_My8zwj297QswRnj9Dvmw_6vMeJBhj";
+const SUPABASE_RECIPE_TABLE = "recipes";
+const supabaseClient = window.supabase?.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) || null;
 
 
 const PANTRY_INGREDIENTS = new Set([
@@ -146,6 +157,31 @@ let shoppingRecipes = loadShoppingRecipes();
 let shoppingView = "category";
 let recipeFilter = "all";
 let editingRecipeId = null;
+
+function unlockSite() {
+  localStorage.setItem(SITE_UNLOCK_KEY, "true");
+  document.body.classList.remove("locked");
+  passwordError.hidden = true;
+}
+
+function lockSite() {
+  localStorage.removeItem(SITE_UNLOCK_KEY);
+  document.body.classList.add("locked");
+  passwordForm?.reset();
+  passwordInput?.focus();
+}
+
+function initializePasswordGate() {
+  const isUnlocked = localStorage.getItem(SITE_UNLOCK_KEY) === "true";
+
+  if (isUnlocked) {
+    unlockSite();
+    return;
+  }
+
+  document.body.classList.add("locked");
+  passwordInput?.focus();
+}
 
 function showView(viewName) {
   const availableViews = ["calendar", "recipes", "shopping"];
@@ -353,6 +389,73 @@ function saveRecipes() {
   localStorage.setItem("mealPlanGuruRecipes", JSON.stringify(recipes));
 }
 
+function recipeToSupabaseRow(recipe, index = 0) {
+  return {
+    id: recipe.id,
+    name: recipe.name,
+    ingredients: recipe.ingredients,
+    label: recipe.label || "",
+    photo_url: recipe.photoUrl || "",
+    sort_order: index,
+  };
+}
+
+function recipeFromSupabaseRow(row) {
+  return normalizeRecipeRecord({
+    id: row.id,
+    name: row.name,
+    ingredients: row.ingredients,
+    label: row.label || "",
+    photoUrl: row.photo_url || "",
+  });
+}
+
+async function loadSupabaseRecipes() {
+  if (!supabaseClient) {
+    return [];
+  }
+
+  const { data, error } = await supabaseClient
+    .from(SUPABASE_RECIPE_TABLE)
+    .select("id,name,ingredients,label,photo_url,sort_order")
+    .order("sort_order", { ascending: true })
+    .order("name", { ascending: true });
+
+  if (error || !Array.isArray(data)) {
+    return [];
+  }
+
+  return data.map(recipeFromSupabaseRow).filter(Boolean);
+}
+
+async function saveRecipeToSupabase(recipe) {
+  if (!supabaseClient) {
+    return;
+  }
+
+  await supabaseClient
+    .from(SUPABASE_RECIPE_TABLE)
+    .upsert(recipeToSupabaseRow(recipe, recipes.findIndex((item) => item.id === recipe.id)));
+}
+
+async function deleteRecipeFromSupabase(recipeId) {
+  if (!supabaseClient || !recipeId) {
+    return;
+  }
+
+  await supabaseClient.from(SUPABASE_RECIPE_TABLE).delete().eq("id", recipeId);
+}
+
+async function syncRecipesToSupabase() {
+  if (!supabaseClient || recipes.length === 0) {
+    return;
+  }
+
+  await supabaseClient
+    .from(SUPABASE_RECIPE_TABLE)
+    .upsert(recipes.map(recipeToSupabaseRow));
+}
+
 async function loadRecipeFile() {
   try {
     const response = await fetch(RECIPE_DATA_URL, { cache: "no-cache" });
@@ -417,11 +520,17 @@ function mergeRecipeData(fileRecipes, savedRecipes) {
 }
 
 async function loadInitialRecipes() {
+  const supabaseRecipes = await loadSupabaseRecipes();
   const fileRecipes = await loadRecipeFile();
   const savedRecipes = loadRecipes();
-  recipes = mergeRecipeData(fileRecipes, savedRecipes);
+  const baselineRecipes = supabaseRecipes.length > 0 ? supabaseRecipes : fileRecipes;
+  recipes = supabaseRecipes.length > 0 ? baselineRecipes : mergeRecipeData(baselineRecipes, savedRecipes);
   saveRecipes();
   backfillRecipeLabels();
+
+  if (supabaseRecipes.length === 0 && recipes.length > 0) {
+    syncRecipesToSupabase();
+  }
 }
 
 async function exportRecipes() {
@@ -460,7 +569,7 @@ async function exportRecipes() {
 
 function importRecipesFromFile(file) {
   const reader = new FileReader();
-  reader.addEventListener("load", () => {
+  reader.addEventListener("load", async () => {
     try {
       const parsed = JSON.parse(String(reader.result || "{}"));
       const importedRecipes = Array.isArray(parsed) ? parsed : parsed.recipes;
@@ -477,6 +586,7 @@ function importRecipesFromFile(file) {
 
       recipes = [...recipes, ...recipesToAdd];
       saveRecipes();
+      syncRecipesToSupabase();
       renderRecipes();
       renderCalendar();
     } catch {
@@ -1134,7 +1244,20 @@ recipeFilterButtons.forEach((button) => {
     setRecipeFilter(button.dataset.recipeFilter);
   });
 });
-confirmDeleteButton?.addEventListener("click", () => {
+passwordForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const password = passwordInput?.value || "";
+
+  if (password === SITE_PASSWORD) {
+    unlockSite();
+    return;
+  }
+
+  passwordError.hidden = false;
+  passwordInput?.select();
+});
+lockSiteButton?.addEventListener("click", lockSite);
+confirmDeleteButton?.addEventListener("click", async () => {
   const recipeId = pendingDeleteCard?.dataset.recipeId;
   const recipeToDelete = recipes.find((recipe) => recipe.id === recipeId);
   recipes = recipes.filter((recipe) => recipe.id !== recipeId);
@@ -1148,6 +1271,7 @@ confirmDeleteButton?.addEventListener("click", () => {
     renderCalendar();
   }
   saveRecipes();
+  await deleteRecipeFromSupabase(recipeId);
   pendingDeleteCard?.remove();
   closeDeleteModal();
 });
@@ -1260,6 +1384,10 @@ recipeForm?.addEventListener("submit", async (event) => {
   }
 
   saveRecipes();
+  const savedRecipe = editingRecipeId
+    ? recipes.find((recipe) => recipe.id === editingRecipeId)
+    : recipes[0];
+  await saveRecipeToSupabase(savedRecipe);
   renderRecipes();
   renderCalendar();
   recipeForm.reset();
@@ -1267,6 +1395,7 @@ recipeForm?.addEventListener("submit", async (event) => {
 });
 
 async function initializeApp() {
+  initializePasswordGate();
   await loadInitialRecipes();
   showView(window.location.hash.replace("#", ""));
   renderCalendar();
