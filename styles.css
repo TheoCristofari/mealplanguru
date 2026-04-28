@@ -312,7 +312,9 @@ body:not(.locked) .password-screen {
   border-right: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   border-left: 1px solid var(--line);
+  border-radius: 6px;
   background: #ffffff;
+  overflow: hidden;
   text-align: left;
 }
 
