@@ -288,6 +288,7 @@ body:not(.locked) .password-screen {
 }
 
 .calendar-grid {
+  margin-top: 10px;
   row-gap: 20px;
 }
 
