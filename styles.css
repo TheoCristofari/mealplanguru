@@ -203,9 +203,15 @@ body:not(.locked) .password-screen {
 
 .calendar-actions {
   display: flex;
+  width: fit-content;
   justify-content: center;
-  gap: 10px;
-  margin-top: 28px;
+  gap: 4px;
+  margin: 0 auto 28px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f9fafb;
+  font-family: Figtree, "Segoe UI", Arial, sans-serif;
 }
 
 .calendar-title,
@@ -221,7 +227,6 @@ body:not(.locked) .password-screen {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 92px;
   min-height: 34px;
   padding: 0 12px;
   border: 1px solid #dc2626;
@@ -242,7 +247,6 @@ body:not(.locked) .password-screen {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 92px;
   min-height: 34px;
   padding: 0 12px;
   border: 1px solid var(--accent);
@@ -257,6 +261,31 @@ body:not(.locked) .password-screen {
 
 .update-shopping-button:hover {
   background: #176557;
+}
+
+.calendar-actions .reset-planner-button,
+.calendar-actions .update-shopping-button {
+  width: 92px;
+  border: 0;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(17, 24, 39, 0.08);
+  font: inherit;
+}
+
+.calendar-actions .update-shopping-button {
+  color: var(--accent);
+}
+
+.calendar-actions .reset-planner-button {
+  color: #dc2626;
+}
+
+.calendar-actions .update-shopping-button:hover {
+  background: var(--accent-soft);
+}
+
+.calendar-actions .reset-planner-button:hover {
+  background: #fee2e2;
 }
 
 .icon-button {
