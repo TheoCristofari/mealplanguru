@@ -280,6 +280,8 @@ body:not(.locked) .password-screen {
 
 .calendar-actions .reset-planner-button {
   color: #dc2626;
+  background: transparent;
+  box-shadow: none;
 }
 
 .calendar-actions .update-shopping-button:hover {
@@ -287,7 +289,7 @@ body:not(.locked) .password-screen {
 }
 
 .calendar-actions .reset-planner-button:hover {
-  background: #fee2e2;
+  background: transparent;
 }
 
 .icon-button {
@@ -471,15 +473,16 @@ body:not(.locked) .password-screen {
   justify-content: center;
   width: 24px;
   height: 24px;
-  border: 1px solid #fecaca;
+  border: 1px solid #d1d5db;
   border-radius: 5px;
-  color: #dc2626;
-  background: #ffffff;
+  color: #6b7280;
+  background: #f9fafb;
   cursor: pointer;
 }
 
 .remove-meal-button:hover {
-  background: #fee2e2;
+  border-color: #9ca3af;
+  background: #f3f4f6;
 }
 
 .remove-meal-button svg {
@@ -492,8 +495,7 @@ body:not(.locked) .password-screen {
   position: absolute;
   z-index: 100;
   display: grid;
-  max-height: 220px;
-  overflow-y: auto;
+  overflow: visible;
   padding: 6px;
   border: 1px solid var(--line);
   border-radius: 8px;
