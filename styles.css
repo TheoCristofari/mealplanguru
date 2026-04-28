@@ -309,21 +309,11 @@ body:not(.locked) .password-screen {
   position: relative;
   min-height: 220px;
   padding: 0;
-  border-right: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  border-left: 1px solid var(--line);
+  border: 1px solid var(--line);
   border-radius: 6px;
   background: #ffffff;
   overflow: hidden;
   text-align: left;
-}
-
-.calendar-day:nth-child(-n + 7) {
-  border-top: 1px solid var(--line);
-}
-
-.calendar-day:nth-child(n + 8) {
-  border-top: 1px solid var(--line);
 }
 
 .calendar-day:hover {
