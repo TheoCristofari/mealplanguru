@@ -18,10 +18,12 @@
 
     <main class="page">
       <section id="calendar" class="view active-view" aria-labelledby="calendar-title" data-view="calendar">
-        <div class="calendar-toolbar">
-          <button class="icon-button" type="button" data-calendar-prev aria-label="Previous month">&lsaquo;</button>
-          <h1 id="calendar-title" class="calendar-title">Calendar</h1>
-          <button class="icon-button" type="button" data-calendar-next aria-label="Next month">&rsaquo;</button>
+        <div class="calendar-header">
+          <h1 id="calendar-title" class="calendar-title">Meal Planner</h1>
+        </div>
+        <div class="calendar-actions">
+          <button class="update-shopping-button" type="button" data-update-shopping>Update</button>
+          <button class="reset-planner-button" type="button" data-reset-planner>Reset</button>
         </div>
         <div class="calendar" aria-label="Meal planning calendar">
           <div class="calendar-weekdays" aria-hidden="true">
@@ -38,28 +40,46 @@
       </section>
 
       <section id="recipes" class="view" aria-labelledby="recipes-title" data-view="recipes" hidden>
-        <h1 id="recipes-title" class="section-title">Recipes</h1>
+        <div class="section-header">
+          <h1 id="recipes-title" class="section-title">Recipes</h1>
+        </div>
+        <div class="recipe-filter-toggle" aria-label="Filter recipes by label">
+          <button class="recipe-filter-button active" type="button" data-recipe-filter="all" aria-pressed="true">All</button>
+          <button class="recipe-filter-button" type="button" data-recipe-filter="pasta" aria-pressed="false">Pasta</button>
+          <button class="recipe-filter-button" type="button" data-recipe-filter="rice" aria-pressed="false">Rice</button>
+          <button class="recipe-filter-button" type="button" data-recipe-filter="potato" aria-pressed="false">Potato</button>
+          <button class="recipe-filter-button" type="button" data-recipe-filter="noodles" aria-pressed="false">Noodles</button>
+          <button class="recipe-filter-button" type="button" data-recipe-filter="soup" aria-pressed="false">Soup</button>
+          <button class="recipe-filter-button" type="button" data-recipe-filter="quiche" aria-pressed="false">Quiche</button>
+        </div>
         <div class="recipe-grid" aria-label="Recipe cards">
-          <article class="recipe-card"></article>
-          <article class="recipe-card"></article>
-          <article class="recipe-card"></article>
-          <article class="recipe-card"></article>
-          <article class="recipe-card"></article>
-          <article class="recipe-card"></article>
-          <article class="recipe-card"></article>
-          <article class="recipe-card"></article>
-          <article class="recipe-card"></article>
-          <article class="recipe-card"></article>
-          <article class="recipe-card"></article>
           <button class="recipe-card add-recipe-card" type="button" aria-label="Add recipe card">
             <span class="add-icon" aria-hidden="true">+</span>
             <span>Add card</span>
           </button>
         </div>
+        <div class="recipe-actions">
+          <button class="secondary-button" type="button" data-import-recipes>Import recipes</button>
+          <button class="update-shopping-button" type="button" data-export-recipes>Export recipes</button>
+          <input type="file" data-import-recipes-file accept="application/json,.json" hidden>
+        </div>
       </section>
 
       <section id="shopping" class="view" aria-labelledby="shopping-title" data-view="shopping" hidden>
-        <h1 id="shopping-title" class="section-title">Shopping</h1>
+        <div class="section-header">
+          <h1 id="shopping-title" class="section-title">My Shopping List</h1>
+        </div>
+        <div class="shopping-view-toggle" aria-label="Shopping list display">
+          <button class="shopping-view-button active" type="button" data-shopping-view="category" aria-pressed="true">
+            Categories
+          </button>
+          <button class="shopping-view-button" type="button" data-shopping-view="recipe" aria-pressed="false">
+            Recipes
+          </button>
+        </div>
+        <div class="shopping-list" data-shopping-list>
+          <p class="shopping-empty">Use Update Shopping from the Meal Planner to build your list.</p>
+        </div>
       </section>
     </main>
 
@@ -78,9 +98,21 @@
             <span>Ingredients</span>
             <textarea name="ingredients" rows="6" required></textarea>
           </label>
+          <fieldset class="form-field label-picker">
+            <legend class="visually-hidden">Label</legend>
+            <input type="hidden" name="label" data-label-input>
+            <div class="label-options">
+              <button class="label-option recipe-label recipe-label-pasta" type="button" data-label-option="pasta">Pasta</button>
+              <button class="label-option recipe-label recipe-label-rice" type="button" data-label-option="rice">Rice</button>
+              <button class="label-option recipe-label recipe-label-potato" type="button" data-label-option="potato">Potato</button>
+              <button class="label-option recipe-label recipe-label-noodles" type="button" data-label-option="noodles">Noodles</button>
+              <button class="label-option recipe-label recipe-label-soup" type="button" data-label-option="soup">Soup</button>
+              <button class="label-option recipe-label recipe-label-quiche" type="button" data-label-option="quiche">Quiche</button>
+            </div>
+          </fieldset>
           <label class="form-field">
-            <span>Photo</span>
-            <input type="file" name="photo" accept="image/*">
+            <span>Image filename</span>
+            <input type="text" name="photoUrl" autocomplete="off" placeholder="minestrone.jpg">
           </label>
           <button class="form-submit" type="submit" data-recipe-submit>Add</button>
         </form>
@@ -94,6 +126,26 @@
         <div class="confirm-actions">
           <button class="secondary-button" type="button" data-cancel-delete>Cancel</button>
           <button class="danger-button" type="button" data-confirm-delete>Remove</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-overlay" data-reset-modal hidden>
+      <section class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="reset-modal-title">
+        <h2 id="reset-modal-title">Reset meal planner?</h2>
+        <p>This will clear the recipes from every Lunch and Dinner box.</p>
+        <div class="confirm-actions">
+          <button class="secondary-button" type="button" data-cancel-reset>Cancel</button>
+          <button class="danger-button" type="button" data-confirm-reset>Reset</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-overlay" data-shopping-updated-modal hidden>
+      <section class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="shopping-updated-title">
+        <h2 id="shopping-updated-title">Shopping List Updated!</h2>
+        <div class="confirm-actions">
+          <button class="secondary-button" type="button" data-close-shopping-updated>OK</button>
         </div>
       </section>
     </div>
