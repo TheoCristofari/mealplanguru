@@ -818,7 +818,7 @@ h1 {
 
 .recipe-card {
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   min-height: 220px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -887,6 +887,11 @@ body.is-admin .recipe-card-content {
   line-height: 1.25;
 }
 
+.recipe-card-text {
+  display: grid;
+  gap: 8px;
+}
+
 .delete-card-button {
   display: inline-flex;
   align-items: center;
@@ -931,38 +936,34 @@ body.is-admin .recipe-card-content {
 }
 
 .recipe-ingredients {
-  position: relative;
   padding: 0;
   color: var(--muted);
   font-size: 0.86rem;
 }
 
 .recipe-ingredients summary {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 6px;
+  display: block;
   width: 100%;
-  min-height: 36px;
-  padding: 0;
+  min-height: 22px;
+  padding: 0 2px 0 0;
   border-radius: 8px;
   color: #60746f;
-  font-size: 0.84rem;
-  font-weight: 600;
+  font-size: 0.86rem;
+  font-weight: 500;
+  line-height: 1.35;
   cursor: pointer;
   list-style: none;
-  transition: background 0.16s ease, color 0.16s ease;
+  transition: color 0.16s ease, background-color 0.16s ease;
 }
 
 .recipe-ingredients summary:hover {
   color: #3d7064;
-  background: transparent;
+  background: #f7fbfa;
 }
 
 .recipe-ingredients[open] summary {
-  background: transparent;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
+  margin-bottom: 9px;
+  white-space: normal;
 }
 
 .recipe-ingredients summary::-webkit-details-marker {
@@ -973,32 +974,18 @@ body.is-admin .recipe-card-content {
   content: none;
 }
 
-.recipe-ingredients-chevron {
-  width: 16px;
-  height: 16px;
-  flex: 0 0 auto;
-  stroke: currentColor;
-  transition: transform 0.18s ease;
-}
-
-.recipe-ingredients[open] .recipe-ingredients-chevron {
-  transform: rotate(180deg);
+.recipe-ingredients-preview {
+  display: block;
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .recipe-ingredients-list {
-  position: absolute;
-  top: 36px;
-  left: 0;
-  right: 0;
-  z-index: 20;
-  max-height: none;
-  overflow: visible;
   margin: 0;
-  padding: 12px;
-  border: 1px solid #edf2f0;
-  border-radius: 8px;
-  background: #f8faf9;
-  box-shadow: 0 14px 32px rgba(17, 24, 39, 0.14);
+  padding: 10px 0 0;
+  border-top: 1px solid #edf2f0;
   line-height: 1.4;
   list-style: none;
 }

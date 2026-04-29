@@ -1284,6 +1284,20 @@ function isRecipePlanned(recipe) {
   return Object.values(mealPlan).includes(recipe.name);
 }
 
+function formatIngredientPreview(ingredients) {
+  const previewItems = getIngredientLines(ingredients)
+    .slice(0, 4)
+    .map((ingredient) => parseIngredient(ingredient).item.replace(/\s*\([^)]*\)/g, ""))
+    .filter(Boolean);
+
+  if (previewItems.length === 0) {
+    return "Ingredients";
+  }
+
+  const preview = previewItems.join(", ");
+  return `${preview.charAt(0).toUpperCase()}${preview.slice(1)}...`;
+}
+
 function createRecipeCard(recipe) {
   const card = document.createElement("article");
   card.className = "recipe-card recipe-card-filled";
@@ -1333,10 +1347,7 @@ function createRecipeCard(recipe) {
 
   const ingredientSummary = document.createElement("summary");
   ingredientSummary.innerHTML = `
-    <span>Ingredients</span>
-    <svg class="recipe-ingredients-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M6 9l6 6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-    </svg>
+    <span class="recipe-ingredients-preview">${formatIngredientPreview(recipe.ingredients)}</span>
   `;
 
   const ingredientList = document.createElement("ul");
