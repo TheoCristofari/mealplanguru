@@ -1208,11 +1208,6 @@ body.is-admin .recipe-card-content {
   filter: grayscale(1);
 }
 
-.label-option.is-selected {
-  outline: 2px solid var(--ink);
-  outline-offset: 2px;
-}
-
 .form-field input,
 .form-field textarea,
 .form-field select {
