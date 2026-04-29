@@ -963,11 +963,6 @@ body.is-admin .recipe-card-content {
   content: none;
 }
 
-.recipe-ingredients-heading {
-  color: #34524c;
-  font-weight: 600;
-}
-
 .recipe-ingredients-preview {
   display: grid;
   gap: 3px;

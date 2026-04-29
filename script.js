@@ -1262,14 +1262,10 @@ function createRecipeCard(recipe) {
 
   const ingredientLines = getIngredientLines(recipe.ingredients);
   const ingredientSummary = document.createElement("summary");
-  const ingredientHeading = document.createElement("span");
-  ingredientHeading.className = "recipe-ingredients-heading";
-  ingredientHeading.textContent = "Ingredients";
-
   const ingredientPreview = document.createElement("span");
   ingredientPreview.className = "recipe-ingredients-preview";
 
-  ingredientLines.slice(0, 3).forEach((ingredient, index) => {
+  ingredientLines.slice(0, 4).forEach((ingredient, index) => {
     const previewLine = document.createElement("span");
     previewLine.className = "recipe-ingredients-preview-line";
     previewLine.style.setProperty("--preview-index", String(index));
@@ -1277,14 +1273,14 @@ function createRecipeCard(recipe) {
     ingredientPreview.append(previewLine);
   });
 
-  if (ingredientLines.length > 3) {
+  if (ingredientLines.length > 4) {
     const previewMore = document.createElement("span");
     previewMore.className = "recipe-ingredients-preview-line recipe-ingredients-preview-more";
     previewMore.textContent = "...";
     ingredientPreview.append(previewMore);
   }
 
-  ingredientSummary.append(ingredientHeading, ingredientPreview);
+  ingredientSummary.append(ingredientPreview);
 
   const ingredientList = document.createElement("ul");
   ingredientList.className = "recipe-ingredients-list";
