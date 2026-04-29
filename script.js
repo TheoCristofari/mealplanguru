@@ -335,7 +335,10 @@ function renderCalendar() {
       addMealButton.className = "add-meal-card";
       addMealButton.type = "button";
       addMealButton.setAttribute("aria-label", `Add ${mealName} recipe`);
-      addMealButton.textContent = "+";
+      addMealButton.innerHTML = `
+        <span class="add-meal-plus" aria-hidden="true">+</span>
+        <span class="add-meal-text">Add meal</span>
+      `;
       addMealButton.addEventListener("click", (event) => {
         event.stopPropagation();
         toggleMealDropdown(mealSlot, dayKey, mealKey);

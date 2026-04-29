@@ -356,10 +356,10 @@ body:not(.locked) .password-screen {
   justify-content: flex-start;
   min-height: 34px;
   padding: 0 12px;
-  color: #81918d;
+  color: #3d7064;
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .calendar-day {
@@ -367,7 +367,7 @@ body:not(.locked) .password-screen {
   min-height: 220px;
   padding: 0;
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: 8px;
   background: #ffffff;
   text-align: left;
 }
@@ -387,10 +387,10 @@ body:not(.locked) .password-screen {
 .meal-slots {
   display: grid;
   grid-template-rows: auto auto;
-  gap: 22px;
+  gap: 18px;
   min-height: 220px;
   overflow: hidden;
-  padding: 12px;
+  padding: 14px;
   border-radius: inherit;
 }
 
@@ -403,38 +403,53 @@ body:not(.locked) .password-screen {
 }
 
 .meal-label {
-  color: #81918d;
+  color: #a1aca9;
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.05em;
   line-height: 1.2;
   text-transform: uppercase;
 }
 
+.meal-slot + .meal-slot {
+  padding-top: 18px;
+  border-top: 1px solid #edf2f0;
+}
+
 .add-meal-card {
   display: grid;
+  gap: 4px;
   place-items: center;
-  min-height: 52px;
-  border: 1px dashed var(--line);
+  min-height: 50px;
+  padding: 10px 12px;
+  border: 1px dashed #dfe7e4;
   border-radius: 8px;
-  color: var(--muted);
-  background: #ffffff;
+  color: #8b9a96;
+  background: #fbfdfc;
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
-  font-size: 1.45rem;
-  font-weight: 500;
   line-height: 1;
   cursor: pointer;
 }
 
 .calendar-day:hover .add-meal-card {
-  background: #f9fafb;
+  background: #fbfdfc;
 }
 
 .add-meal-card:hover {
   color: var(--accent);
-  border-color: var(--accent);
+  border-color: #b9d7cf;
   background: #f7fbfa;
+}
+
+.add-meal-plus {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.add-meal-text {
+  font-size: 0.72rem;
+  font-weight: 600;
 }
 
 .planned-recipe {
@@ -444,49 +459,56 @@ body:not(.locked) .password-screen {
   grid-template-columns: minmax(0, 1fr) 24px;
   align-items: center;
   gap: 6px;
-  padding: 12px 14px;
-  border-radius: 6px;
+  padding: 12px;
+  border-radius: 8px;
   color: var(--planned-text);
   background: var(--planned-bg);
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
-  font-size: 0.82rem;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.planned-recipe:hover {
+  filter: saturate(1.06);
+  box-shadow: 0 6px 16px rgba(17, 24, 39, 0.08);
+  transform: translateY(-1px);
 }
 
 .planned-recipe-built-in {
-  --planned-text: var(--accent);
-  --planned-bg: var(--accent-soft);
+  --planned-text: #176557;
+  --planned-bg: #cce8df;
 }
 
 .planned-recipe-pasta {
-  --planned-text: #7c2d12;
-  --planned-bg: #ffedd5;
+  --planned-text: #8f2f0d;
+  --planned-bg: #ffd8b5;
 }
 
 .planned-recipe-rice {
   --planned-text: #075985;
-  --planned-bg: #e0f2fe;
+  --planned-bg: #bae6fd;
 }
 
 .planned-recipe-potato {
-  --planned-text: #713f12;
-  --planned-bg: #fef3c7;
+  --planned-text: #854d0e;
+  --planned-bg: #fde68a;
 }
 
 .planned-recipe-noodles {
   --planned-text: #6d28d9;
-  --planned-bg: #ede9fe;
+  --planned-bg: #ddd6fe;
 }
 
 .planned-recipe-soup {
   --planned-text: #166534;
-  --planned-bg: #dcfce7;
+  --planned-bg: #bbf7d0;
 }
 
 .planned-recipe-quiche {
   --planned-text: #9d174d;
-  --planned-bg: #fce7f3;
+  --planned-bg: #fbcfe8;
 }
 
 .planned-recipe-name {
