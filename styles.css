@@ -989,6 +989,7 @@ h1 {
   opacity: calc(0.72 - (var(--preview-index, 0) * 0.14));
   text-overflow: ellipsis;
   white-space: nowrap;
+  max-width: calc(100% - 3ch);
 }
 
 .recipe-ingredients-preview-more {
