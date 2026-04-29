@@ -72,6 +72,11 @@ const RECIPE_LABEL_NAMES = {
   quiche: "Quiche",
   "": "Other",
 };
+const MEAL_DROPDOWN_COLUMNS = [
+  ["built-ins", "pasta", "noodles", ""],
+  ["rice", "soup"],
+  ["potato", "quiche"],
+];
 
 
 const PANTRY_INGREDIENTS = new Set([
@@ -857,6 +862,44 @@ function toggleMealDropdown(mealSlot, dateKey, mealKey) {
   dropdown.className = "meal-dropdown";
   dropdown.dataset.slotId = getMealPlanKey(dateKey, mealKey);
 
+  const dropdownColumns = MEAL_DROPDOWN_COLUMNS.map(() => {
+    const column = document.createElement("span");
+    column.className = "meal-dropdown-column";
+    dropdown.append(column);
+    return column;
+  });
+
+  if (recipes.length === 0) {
+    appendBuiltInMealOptions(dropdownColumns[0], dateKey, mealKey);
+    const emptyItem = document.createElement("span");
+    emptyItem.className = "meal-dropdown-empty";
+    emptyItem.textContent = "No saved recipes yet";
+    dropdownColumns[0].append(emptyItem);
+  } else {
+    const recipesByLabel = recipes.reduce((groups, recipe) => {
+      const label = RECIPE_LABEL_ORDER.includes(recipe.label) ? recipe.label : "";
+      groups[label] ||= [];
+      groups[label].push(recipe);
+      return groups;
+    }, {});
+
+    MEAL_DROPDOWN_COLUMNS.forEach((labels, columnIndex) => {
+      labels.forEach((label) => {
+        if (label === "built-ins") {
+          appendBuiltInMealOptions(dropdownColumns[columnIndex], dateKey, mealKey);
+          return;
+        }
+
+        appendMealRecipeGroup(dropdownColumns[columnIndex], label, recipesByLabel[label] || [], dateKey, mealKey);
+      });
+    });
+  }
+
+  document.body.append(dropdown);
+  positionMealDropdown(dropdown, mealSlot);
+}
+
+function appendBuiltInMealOptions(container, dateKey, mealKey) {
   const builtInGroup = document.createElement("span");
   builtInGroup.className = "meal-dropdown-group meal-dropdown-built-ins";
   ["Leftovers", "Eating Out"].forEach((builtInOption) => {
@@ -873,60 +916,41 @@ function toggleMealDropdown(mealSlot, dateKey, mealKey) {
     });
     builtInGroup.append(builtInButton);
   });
-  dropdown.append(builtInGroup);
+  container.append(builtInGroup);
+}
 
-  if (recipes.length === 0) {
-    const emptyItem = document.createElement("span");
-    emptyItem.className = "meal-dropdown-empty";
-    emptyItem.textContent = "No saved recipes yet";
-    dropdown.append(emptyItem);
-  } else {
-    const recipesByLabel = recipes.reduce((groups, recipe) => {
-      const label = RECIPE_LABEL_ORDER.includes(recipe.label) ? recipe.label : "";
-      groups[label] ||= [];
-      groups[label].push(recipe);
-      return groups;
-    }, {});
-
-    RECIPE_LABEL_ORDER.forEach((label) => {
-      const labelRecipes = recipesByLabel[label] || [];
-
-      if (labelRecipes.length === 0) {
-        return;
-      }
-
-      const group = document.createElement("span");
-      group.className = "meal-dropdown-group";
-
-      const groupTitle = document.createElement("span");
-      groupTitle.className = "meal-dropdown-heading";
-      groupTitle.textContent = RECIPE_LABEL_NAMES[label];
-      group.append(groupTitle);
-
-      labelRecipes
-        .slice()
-        .sort((first, second) => first.name.localeCompare(second.name))
-        .forEach((recipe) => {
-          const recipeButton = document.createElement("button");
-          recipeButton.className = `meal-dropdown-item meal-dropdown-recipe meal-dropdown-recipe-${recipe.label || "other"}`;
-          recipeButton.type = "button";
-          recipeButton.textContent = recipe.name;
-          recipeButton.addEventListener("click", (event) => {
-            event.stopPropagation();
-            mealPlan[getMealPlanKey(dateKey, mealKey)] = recipe.name;
-            saveMealPlan();
-            closeMealDropdowns();
-            renderCalendar();
-          });
-          group.append(recipeButton);
-        });
-
-      dropdown.append(group);
-    });
+function appendMealRecipeGroup(container, label, labelRecipes, dateKey, mealKey) {
+  if (labelRecipes.length === 0) {
+    return;
   }
 
-  document.body.append(dropdown);
-  positionMealDropdown(dropdown, mealSlot);
+  const group = document.createElement("span");
+  group.className = "meal-dropdown-group";
+
+  const groupTitle = document.createElement("span");
+  groupTitle.className = `meal-dropdown-heading meal-dropdown-heading-${label || "other"}`;
+  groupTitle.textContent = RECIPE_LABEL_NAMES[label];
+  group.append(groupTitle);
+
+  labelRecipes
+    .slice()
+    .sort((first, second) => first.name.localeCompare(second.name))
+    .forEach((recipe) => {
+      const recipeButton = document.createElement("button");
+      recipeButton.className = `meal-dropdown-item meal-dropdown-recipe meal-dropdown-recipe-${recipe.label || "other"}`;
+      recipeButton.type = "button";
+      recipeButton.textContent = recipe.name;
+      recipeButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        mealPlan[getMealPlanKey(dateKey, mealKey)] = recipe.name;
+        saveMealPlan();
+        closeMealDropdowns();
+        renderCalendar();
+      });
+      group.append(recipeButton);
+    });
+
+  container.append(group);
 }
 
 function positionMealDropdown(dropdown, mealSlot) {
