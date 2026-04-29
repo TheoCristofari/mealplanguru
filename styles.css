@@ -512,6 +512,15 @@ body:not(.locked) .password-screen {
   color: #6b7280;
   background: #f9fafb;
   cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.planned-recipe:hover .remove-meal-button,
+.planned-recipe:focus-within .remove-meal-button {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .remove-meal-button:hover {
