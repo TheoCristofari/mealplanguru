@@ -44,6 +44,7 @@ const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_r_My8zwj297QswRnj9Dvmw_6vMeJBhj
 const SUPABASE_RECIPE_TABLE = "recipes";
 const SUPABASE_IMAGE_BUCKET = "recipe-images";
 const ADMIN_EMAIL = "theo@companydebt.com";
+const ADMIN_DISPLAY_NAME = "Théo";
 const ADMIN_REDIRECT_URL = "https://theocristofari.github.io/mealplanguru/";
 const supabaseClient = window.supabase?.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) || null;
 const RECIPE_LABEL_ORDER = ["pasta", "rice", "potato", "noodles", "soup", "quiche", ""];
@@ -241,9 +242,9 @@ function openAuthModal() {
     return;
   }
 
-  authMessage.textContent = "Sign in to add, edit, or delete recipes.";
+  authMessage.textContent = "Choose who should receive the admin login link.";
   authModal.hidden = false;
-  authForm?.elements.email?.focus();
+  authForm?.querySelector("button[type='submit']")?.focus();
 }
 
 function closeAuthModal() {
@@ -1419,20 +1420,13 @@ lockSiteButton?.addEventListener("click", lockSite);
 authForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const email = String(new FormData(authForm).get("email") || "").trim().toLowerCase();
-
-  if (email !== ADMIN_EMAIL) {
-    authMessage.textContent = `Only ${ADMIN_EMAIL} can edit recipes.`;
-    return;
-  }
-
   if (!supabaseClient) {
     authMessage.textContent = "Admin login is not available right now.";
     return;
   }
 
   const { error } = await supabaseClient.auth.signInWithOtp({
-    email,
+    email: ADMIN_EMAIL,
     options: {
       emailRedirectTo: ADMIN_REDIRECT_URL,
     },
@@ -1440,7 +1434,7 @@ authForm?.addEventListener("submit", async (event) => {
 
   authMessage.textContent = error
     ? "Could not send the login link. Try again in a moment."
-    : "Check your email for the login link.";
+    : `Login link sent to ${ADMIN_DISPLAY_NAME}.`;
 });
 authModal?.addEventListener("click", (event) => {
   if (event.target === authModal) {

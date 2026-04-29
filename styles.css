@@ -984,6 +984,23 @@ body.is-admin .recipe-card-content {
   gap: 18px;
 }
 
+.admin-choice-button {
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--accent);
+  background: #ffffff;
+  font-family: Figtree, "Segoe UI", Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.admin-choice-button:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
 .confirm-actions {
   display: flex;
   justify-content: flex-end;

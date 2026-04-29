@@ -172,21 +172,17 @@
     <div class="modal-overlay" data-auth-modal hidden>
       <section class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
         <h2 id="auth-modal-title">Admin login</h2>
-        <p data-auth-message>Sign in to add, edit, or delete recipes.</p>
+        <p data-auth-message>Choose who should receive the admin login link.</p>
         <form class="auth-form" data-auth-form>
-          <label class="form-field">
-            <span>Email</span>
-            <input type="email" name="email" autocomplete="email" value="theo@companydebt.com" required>
-          </label>
+          <button class="admin-choice-button" type="submit">Théo</button>
           <div class="confirm-actions">
             <button class="secondary-button" type="button" data-close-auth>Cancel</button>
-            <button class="update-shopping-button" type="submit">Send link</button>
           </div>
         </form>
       </section>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="script.js?v=20260429-admin-redirect"></script>
+    <script src="script.js?v=20260429-admin-choice"></script>
   </body>
 </html>
