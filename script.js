@@ -210,8 +210,9 @@ function updateAdminState(user) {
   document.body.classList.toggle("is-admin", isAdmin);
 
   if (authButton) {
-    authButton.textContent = isAdmin ? "Sign out" : "Admin";
     authButton.setAttribute("aria-pressed", String(isAdmin));
+    authButton.setAttribute("aria-label", isAdmin ? "Sign out" : "Admin login");
+    authButton.setAttribute("title", isAdmin ? "Sign out" : "Admin login");
   }
 
   if (addRecipeButton) {
