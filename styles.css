@@ -839,7 +839,6 @@ h1 {
   border-radius: 50%;
   color: var(--accent);
   background: #dff3ed;
-  box-shadow: 0 4px 12px rgba(33, 124, 107, 0.12);
 }
 
 .recipe-planned-badge svg {
