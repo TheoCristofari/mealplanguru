@@ -988,30 +988,27 @@ body.is-admin .recipe-card-content {
   display: grid;
   place-items: center;
   align-content: center;
-  gap: 10px;
-  color: var(--muted);
-  border-style: dashed;
+  gap: 4px;
+  min-height: 220px;
+  padding: 10px 12px;
+  color: #8b9a96;
+  border: 1px dashed #dfe7e4;
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
-  font-size: 0.95rem;
-  font-weight: 700;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1;
   cursor: pointer;
 }
 
 .add-recipe-card:hover {
   color: var(--accent);
-  border-color: var(--accent);
+  border-color: #b9d7cf;
   background: #f7fbfa;
 }
 
 .add-icon {
-  display: inline-grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  font-size: 1.6rem;
-  font-weight: 400;
+  font-size: 1rem;
+  font-weight: 700;
   line-height: 1;
 }
 
