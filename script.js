@@ -1309,6 +1309,9 @@ function createRecipeCard(recipe) {
 
   const ingredientList = document.createElement("ul");
   ingredientList.className = "recipe-ingredients-list";
+  ingredientList.addEventListener("click", () => {
+    ingredientDetails.open = false;
+  });
 
   ingredientLines.forEach((ingredient) => {
     const item = document.createElement("li");
