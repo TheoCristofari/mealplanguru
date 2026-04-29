@@ -859,8 +859,13 @@ h1 {
   display: grid;
   align-items: center;
   justify-items: center;
-  align-content: start;
+  grid-template-rows: auto auto 1fr auto;
   gap: 8px;
+  min-height: 100%;
+}
+
+.recipe-card-actions .recipe-planned-badge {
+  grid-row: 4;
 }
 
 .recipe-card-title-row {
