@@ -373,7 +373,7 @@ body:not(.locked) .password-screen {
 }
 
 .calendar-day:hover {
-  background: #fafafa;
+  background: #ffffff;
 }
 
 .calendar-day.is-weekend {
@@ -381,7 +381,7 @@ body:not(.locked) .password-screen {
 }
 
 .calendar-day.is-weekend:hover {
-  background: #fafafa;
+  background: #ffffff;
 }
 
 .meal-slots {
