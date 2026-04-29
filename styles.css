@@ -841,8 +841,13 @@ h1 {
 .recipe-card-filled {
   display: grid;
   align-content: start;
-  min-height: 260px;
+  height: 322px;
+  min-height: 322px;
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
+}
+
+.recipe-card-filled:has(.recipe-ingredients[open]) {
+  height: auto;
 }
 
 .recipe-card-content {
