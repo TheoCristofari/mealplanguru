@@ -959,8 +959,6 @@ h1 {
 
 .recipe-ingredients[open] summary {
   background: transparent;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
 }
 
 .recipe-ingredients summary::-webkit-details-marker {
@@ -997,25 +995,20 @@ h1 {
 }
 
 .recipe-ingredients-list {
-  position: absolute;
-  top: 36px;
-  left: 0;
-  right: 0;
-  z-index: 20;
-  max-height: none;
-  overflow: visible;
+  display: grid;
+  gap: 3px;
+  overflow: hidden;
   margin: 0;
-  padding: 12px;
-  border: 1px solid #edf2f0;
-  border-radius: 8px;
-  background: #f8faf9;
-  box-shadow: 0 14px 32px rgba(17, 24, 39, 0.14);
-  line-height: 1.4;
+  padding: 0;
+  color: #526862;
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.28;
   list-style: none;
 }
 
 .recipe-ingredients[open] .recipe-ingredients-list {
-  animation: recipeIngredientsOpen 180ms ease;
+  animation: recipeIngredientsOpen 190ms ease;
 }
 
 @keyframes recipeIngredientsOpen {
@@ -1031,23 +1024,19 @@ h1 {
 }
 
 .recipe-ingredients-list li {
-  position: relative;
-  padding-left: 14px;
+  overflow: hidden;
+  padding: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: calc(100% - 3ch);
 }
 
 .recipe-ingredients-list li + li {
-  margin-top: 7px;
+  margin-top: 0;
 }
 
 .recipe-ingredients-list li::before {
-  content: "";
-  position: absolute;
-  top: 0.62em;
-  left: 0;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #b8c4c0;
+  content: none;
 }
 
 .recipe-label {
