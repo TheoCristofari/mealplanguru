@@ -344,36 +344,59 @@ function renderCalendar() {
       mealSlot.append(mealLabel);
 
       if (selectedRecipeName) {
-        const selectedRecipe = document.createElement("span");
-        selectedRecipe.className = "planned-recipe";
         const plannedRecipe = recipes.find((recipe) => recipe.name === selectedRecipeName);
         const plannedLabel = plannedRecipe?.label;
+        const selectedRecipe = document.createElement("article");
+        selectedRecipe.className = "planned-recipe";
         if (plannedLabel) {
           selectedRecipe.classList.add(`planned-recipe-${plannedLabel}`);
         } else if (selectedRecipeName === "Leftovers" || selectedRecipeName === "Eating Out") {
           selectedRecipe.classList.add("planned-recipe-built-in");
         }
 
-        const selectedRecipeText = document.createElement("span");
-        selectedRecipeText.className = "planned-recipe-name";
-        selectedRecipeText.textContent = selectedRecipeName;
-        selectedRecipe.addEventListener("click", (event) => {
+        const plannedMedia = document.createElement("div");
+        plannedMedia.className = "planned-recipe-media";
+
+        if (plannedRecipe?.photoUrl) {
+          const plannedPhoto = document.createElement("img");
+          plannedPhoto.className = "planned-recipe-photo";
+          plannedPhoto.src = plannedRecipe.photoUrl;
+          plannedPhoto.alt = selectedRecipeName;
+          plannedMedia.append(plannedPhoto);
+        }
+
+        const changeMealButton = document.createElement("button");
+        changeMealButton.className = "change-meal-button";
+        changeMealButton.type = "button";
+        changeMealButton.setAttribute("aria-label", `Change ${mealName} recipe`);
+        changeMealButton.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3Z" stroke-width="2" stroke-linejoin="round"></path>
+            <path d="M14 7l3 3" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        `;
+        changeMealButton.addEventListener("click", (event) => {
           event.stopPropagation();
           toggleMealDropdown(mealSlot, dayKey, mealKey);
         });
+        plannedMedia.append(changeMealButton);
+
+        const plannedBody = document.createElement("div");
+        plannedBody.className = "planned-recipe-body";
+
+        const selectedRecipeText = document.createElement("h3");
+        selectedRecipeText.className = "planned-recipe-name";
+        selectedRecipeText.textContent = selectedRecipeName;
+
+        const selectedRecipeLabel = document.createElement("span");
+        selectedRecipeLabel.className = "planned-recipe-label";
+        selectedRecipeLabel.textContent = plannedLabel ? RECIPE_LABEL_NAMES[plannedLabel] : "Plan";
 
         const removeMealButton = document.createElement("button");
         removeMealButton.className = "remove-meal-button";
         removeMealButton.type = "button";
         removeMealButton.setAttribute("aria-label", `Remove ${mealName} recipe`);
-        removeMealButton.innerHTML = `
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M3 6h18" stroke-width="2" stroke-linecap="round"></path>
-            <path d="M8 6V4h8v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-            <path d="M6 6l1 15h10l1-15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-            <path d="M10 11v6M14 11v6" stroke-width="2" stroke-linecap="round"></path>
-          </svg>
-        `;
+        removeMealButton.textContent = "Remove";
         removeMealButton.addEventListener("click", (event) => {
           event.stopPropagation();
           delete mealPlan[assignmentKey];
@@ -381,7 +404,8 @@ function renderCalendar() {
           renderCalendar();
         });
 
-        selectedRecipe.append(selectedRecipeText, removeMealButton);
+        plannedBody.append(selectedRecipeText, selectedRecipeLabel, removeMealButton);
+        selectedRecipe.append(plannedMedia, plannedBody);
         mealSlot.append(selectedRecipe);
       } else {
         mealSlot.append(addMealButton);
@@ -1259,7 +1283,14 @@ function createRecipeCard(recipe) {
   deleteButton.className = "delete-card-button";
   deleteButton.type = "button";
   deleteButton.setAttribute("aria-label", `Remove ${recipe.name}`);
-  deleteButton.textContent = "Remove";
+  deleteButton.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M3 6h18" stroke-width="2" stroke-linecap="round"></path>
+      <path d="M8 6V4h8v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      <path d="M6 6l1 15h10l1-15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      <path d="M10 11v6M14 11v6" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+  `;
   deleteButton.addEventListener("click", () => openDeleteModal(card));
 
   const editButton = document.createElement("button");
@@ -1278,26 +1309,14 @@ function createRecipeCard(recipe) {
   title.className = "recipe-card-title";
   title.textContent = recipe.name;
 
-  const media = document.createElement("div");
-  media.className = "recipe-card-media";
-
-  if (recipe.photoUrl) {
-    const photo = document.createElement("img");
-    photo.className = "recipe-photo";
-    photo.src = recipe.photoUrl;
-    photo.alt = recipe.name;
-    media.append(photo);
-  }
-
-  if (isAdmin) {
-    media.append(editButton);
-  }
-
   const content = document.createElement("div");
   content.className = "recipe-card-content";
 
   const textContent = document.createElement("div");
   textContent.className = "recipe-card-text";
+
+  const actions = document.createElement("div");
+  actions.className = "recipe-card-actions";
 
   const ingredientDetails = document.createElement("details");
   ingredientDetails.className = "recipe-ingredients";
@@ -1318,8 +1337,16 @@ function createRecipeCard(recipe) {
     ingredientList.append(item);
   });
 
+  if (recipe.photoUrl) {
+    const photo = document.createElement("img");
+    photo.className = "recipe-photo";
+    photo.src = recipe.photoUrl;
+    photo.alt = recipe.name;
+    card.append(photo);
+  }
+
   ingredientDetails.append(ingredientSummary, ingredientList);
-  textContent.append(title);
+  textContent.append(title, ingredientDetails);
 
   if (recipe.label) {
     const label = document.createElement("span");
@@ -1328,12 +1355,12 @@ function createRecipeCard(recipe) {
     textContent.append(label);
   }
 
+  actions.append(deleteButton, editButton);
   if (isAdmin) {
-    textContent.append(deleteButton);
+    content.append(textContent, actions);
+  } else {
+    content.append(textContent);
   }
-  textContent.append(ingredientDetails);
-  content.append(textContent);
-  card.append(media);
   card.append(content);
 
   return card;
