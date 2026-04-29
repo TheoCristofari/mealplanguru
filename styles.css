@@ -921,7 +921,7 @@ body.is-admin .recipe-card-content {
   gap: 10px;
   width: 100%;
   min-height: 36px;
-  padding: 0 10px;
+  padding: 0;
   border-radius: 8px;
   color: #60746f;
   font-size: 0.84rem;
@@ -933,11 +933,11 @@ body.is-admin .recipe-card-content {
 
 .recipe-ingredients summary:hover {
   color: #3d7064;
-  background: #f2f5f4;
+  background: transparent;
 }
 
 .recipe-ingredients[open] summary {
-  background: #f8faf9;
+  background: transparent;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
