@@ -819,13 +819,10 @@ h1 {
 }
 
 .recipe-planned-badge {
-  position: absolute;
-  right: 12px;
-  bottom: 12px;
-  z-index: 5;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 auto;
   width: 26px;
   height: 26px;
   border: 1px solid #b7ded2;
@@ -854,21 +851,25 @@ h1 {
   padding: 18px;
 }
 
-body.is-admin .recipe-card-content {
-  grid-template-columns: minmax(0, 1fr) 32px;
+.recipe-card-filled.has-card-actions .recipe-card-content {
+  padding-bottom: 54px;
 }
 
 .recipe-card-actions {
-  display: grid;
-  align-content: start;
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   gap: 8px;
 }
 
 .recipe-card-title-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
+  display: grid;
+  justify-items: start;
+  gap: 8px;
 }
 
 .recipe-card-title {

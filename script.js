@@ -1314,9 +1314,10 @@ function createRecipeCard(recipe) {
 
   textContent.append(titleRow, ingredientDetails);
 
-  actions.append(deleteButton, editButton);
   if (isAdmin) {
-    content.append(textContent, actions);
+    actions.append(editButton, deleteButton);
+    card.classList.add("has-card-actions");
+    content.append(textContent);
   } else {
     content.append(textContent);
   }
@@ -1330,10 +1331,14 @@ function createRecipeCard(recipe) {
         <path d="M5 12.5l4.2 4.2L19 7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>
       </svg>
     `;
-    card.append(plannedBadge);
+    actions.append(plannedBadge);
+    card.classList.add("has-card-actions");
   }
 
   card.append(content);
+  if (actions.children.length > 0) {
+    card.append(actions);
+  }
 
   return card;
 }
