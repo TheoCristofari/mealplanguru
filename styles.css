@@ -880,6 +880,11 @@ body.is-admin .recipe-card-content {
   line-height: 1.25;
 }
 
+.recipe-card-text {
+  display: grid;
+  gap: 16px;
+}
+
 .delete-card-button {
   display: inline-flex;
   align-items: center;
