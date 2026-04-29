@@ -1545,6 +1545,12 @@ document.addEventListener("click", (event) => {
   if (!event.target.closest(".meal-slot")) {
     closeMealDropdowns();
   }
+
+  if (!event.target.closest(".recipe-ingredients")) {
+    document.querySelectorAll(".recipe-ingredients[open]").forEach((details) => {
+      details.open = false;
+    });
+  }
 });
 
 recipeForm?.addEventListener("submit", async (event) => {
