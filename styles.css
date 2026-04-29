@@ -969,8 +969,8 @@ body.is-admin .recipe-card-content {
   left: 0;
   right: 0;
   z-index: 20;
-  max-height: 150px;
-  overflow: auto;
+  max-height: none;
+  overflow: visible;
   margin: 0;
   padding: 12px;
   border: 1px solid #edf2f0;
