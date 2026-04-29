@@ -477,8 +477,8 @@ body:not(.locked) .password-screen {
 }
 
 .planned-recipe-built-in {
-  --planned-text: #176557;
-  --planned-bg: #cce8df;
+  --planned-text: #4b5563;
+  --planned-bg: #edf0ef;
 }
 
 .planned-recipe-pasta {
