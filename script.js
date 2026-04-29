@@ -20,6 +20,8 @@ const shoppingList = document.querySelector("[data-shopping-list]");
 const shoppingViewButtons = document.querySelectorAll("[data-shopping-view]");
 const shoppingUpdatedModal = document.querySelector("[data-shopping-updated-modal]");
 const closeShoppingUpdatedButton = document.querySelector("[data-close-shopping-updated]");
+const adminRequiredModal = document.querySelector("[data-admin-required-modal]");
+const closeAdminRequiredButton = document.querySelector("[data-close-admin-required]");
 const labelInput = document.querySelector("[data-label-input]");
 const labelOptions = document.querySelectorAll("[data-label-option]");
 const recipeFilterButtons = document.querySelectorAll("[data-recipe-filter]");
@@ -470,6 +472,15 @@ function openShoppingUpdatedModal() {
 
 function closeShoppingUpdatedModal() {
   shoppingUpdatedModal.hidden = true;
+}
+
+function openAdminRequiredModal() {
+  adminRequiredModal.hidden = false;
+  closeAdminRequiredButton?.focus();
+}
+
+function closeAdminRequiredModal() {
+  adminRequiredModal.hidden = true;
 }
 
 function loadRecipes() {
@@ -1230,7 +1241,14 @@ function createRecipeCard(recipe) {
       <path d="M10 11v6M14 11v6" stroke-width="2" stroke-linecap="round"></path>
     </svg>
   `;
-  deleteButton.addEventListener("click", () => openDeleteModal(card));
+  deleteButton.addEventListener("click", () => {
+    if (!isAdmin) {
+      openAdminRequiredModal();
+      return;
+    }
+
+    openDeleteModal(card);
+  });
 
   const editButton = document.createElement("button");
   editButton.className = "edit-card-button";
@@ -1242,7 +1260,14 @@ function createRecipeCard(recipe) {
       <path d="M14 7l3 3" stroke-width="2" stroke-linecap="round"></path>
     </svg>
   `;
-  editButton.addEventListener("click", () => openRecipeModal(recipe));
+  editButton.addEventListener("click", () => {
+    if (!isAdmin) {
+      openAdminRequiredModal();
+      return;
+    }
+
+    openRecipeModal(recipe);
+  });
 
   const title = document.createElement("h2");
   title.className = "recipe-card-title";
@@ -1314,10 +1339,8 @@ function createRecipeCard(recipe) {
 
   textContent.append(titleRow, ingredientDetails);
 
-  if (isAdmin) {
-    actions.append(deleteButton, editButton);
-    card.classList.add("has-card-actions");
-  }
+  actions.append(deleteButton, editButton);
+  card.classList.add("has-card-actions");
 
   if (isRecipePlanned(recipe)) {
     const plannedBadge = document.createElement("span");
@@ -1389,6 +1412,7 @@ updateShoppingButton?.addEventListener("click", () => {
   openShoppingUpdatedModal();
 });
 closeShoppingUpdatedButton?.addEventListener("click", closeShoppingUpdatedModal);
+closeAdminRequiredButton?.addEventListener("click", closeAdminRequiredModal);
 shoppingViewButtons.forEach((button) => {
   button.addEventListener("click", () => {
     setShoppingView(button.dataset.shoppingView);
@@ -1518,6 +1542,12 @@ shoppingUpdatedModal?.addEventListener("click", (event) => {
   }
 });
 
+adminRequiredModal?.addEventListener("click", (event) => {
+  if (event.target === adminRequiredModal) {
+    closeAdminRequiredModal();
+  }
+});
+
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && recipeModal && !recipeModal.hidden) {
     closeRecipeModal();
@@ -1533,6 +1563,10 @@ document.addEventListener("keydown", (event) => {
 
   if (event.key === "Escape" && shoppingUpdatedModal && !shoppingUpdatedModal.hidden) {
     closeShoppingUpdatedModal();
+  }
+
+  if (event.key === "Escape" && adminRequiredModal && !adminRequiredModal.hidden) {
+    closeAdminRequiredModal();
   }
 
   if (event.key === "Escape" && authModal && !authModal.hidden) {

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Meal Plan Guru</title>
-    <link rel="stylesheet" href="styles.css?v=20260429-recipe-tick-bottom">
+    <link rel="stylesheet" href="styles.css?v=20260429-visible-recipe-actions">
   </head>
   <body class="locked">
     <div class="password-screen" data-password-screen>
@@ -169,6 +169,16 @@
       </section>
     </div>
 
+    <div class="modal-overlay" data-admin-required-modal hidden>
+      <section class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="admin-required-title">
+        <h2 id="admin-required-title">Woops!</h2>
+        <p>You need to be logged as Admin to do that.</p>
+        <div class="confirm-actions">
+          <button class="secondary-button" type="button" data-close-admin-required>OK</button>
+        </div>
+      </section>
+    </div>
+
     <div class="modal-overlay" data-auth-modal hidden>
       <section class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
         <h2 id="auth-modal-title" data-auth-title>Who's There?</h2>
@@ -183,6 +193,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="script.js?v=20260429-recipe-tick-bottom"></script>
+    <script src="script.js?v=20260429-visible-recipe-actions"></script>
   </body>
 </html>
