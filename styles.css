@@ -1009,6 +1009,16 @@ body.is-admin .recipe-card-content {
   background: var(--accent-soft);
 }
 
+.admin-choice-button.is-confirmation {
+  color: #ffffff;
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.admin-choice-button.is-confirmation:hover {
+  background: #176557;
+}
+
 .confirm-actions {
   display: flex;
   justify-content: flex-end;

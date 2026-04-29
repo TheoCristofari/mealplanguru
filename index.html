@@ -176,10 +176,10 @@
 
     <div class="modal-overlay" data-auth-modal hidden>
       <section class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
-        <h2 id="auth-modal-title">Admin login</h2>
-        <p data-auth-message>Choose who should receive the admin login link.</p>
+        <h2 id="auth-modal-title" data-auth-title>Who's There?</h2>
+        <p data-auth-message>Select a user</p>
         <form class="auth-form" data-auth-form>
-          <button class="admin-choice-button" type="submit">Théo</button>
+          <button class="admin-choice-button" type="submit" data-admin-choice>Théo</button>
           <div class="confirm-actions">
             <button class="secondary-button" type="button" data-close-auth>Cancel</button>
           </div>
@@ -188,6 +188,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="script.js?v=20260429-admin-exit-icon"></script>
+    <script src="script.js?v=20260429-admin-popup"></script>
   </body>
 </html>

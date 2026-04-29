@@ -34,7 +34,9 @@ const lockSiteButton = document.querySelector("[data-lock-site]");
 const authButton = document.querySelector("[data-auth-button]");
 const authModal = document.querySelector("[data-auth-modal]");
 const authForm = document.querySelector("[data-auth-form]");
+const authTitle = document.querySelector("[data-auth-title]");
 const authMessage = document.querySelector("[data-auth-message]");
+const adminChoiceButton = document.querySelector("[data-admin-choice]");
 const closeAuthButton = document.querySelector("[data-close-auth]");
 const SITE_PASSWORD = "guru";
 const SITE_UNLOCK_KEY = "mealPlanGuruUnlocked";
@@ -191,6 +193,7 @@ let recipeFilter = "all";
 let editingRecipeId = null;
 let currentUser = null;
 let isAdmin = false;
+let authLinkSent = false;
 
 function unlockSite() {
   localStorage.setItem(SITE_UNLOCK_KEY, "true");
@@ -257,9 +260,17 @@ function openAuthModal() {
     return;
   }
 
-  authMessage.textContent = "Choose who should receive the admin login link.";
+  authLinkSent = false;
+  if (authTitle) {
+    authTitle.textContent = "Who's There?";
+  }
+  authMessage.textContent = "Select a user";
+  if (adminChoiceButton) {
+    adminChoiceButton.textContent = ADMIN_DISPLAY_NAME;
+    adminChoiceButton.classList.remove("is-confirmation");
+  }
   authModal.hidden = false;
-  authForm?.querySelector("button[type='submit']")?.focus();
+  adminChoiceButton?.focus();
 }
 
 function closeAuthModal() {
@@ -1435,6 +1446,11 @@ lockSiteButton?.addEventListener("click", lockSite);
 authForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
+  if (authLinkSent) {
+    closeAuthModal();
+    return;
+  }
+
   if (!supabaseClient) {
     authMessage.textContent = "Admin login is not available right now.";
     return;
@@ -1447,9 +1463,18 @@ authForm?.addEventListener("submit", async (event) => {
     },
   });
 
-  authMessage.textContent = error
-    ? "Could not send the login link. Try again in a moment."
-    : `Login link sent to ${ADMIN_DISPLAY_NAME}.`;
+  if (error) {
+    authMessage.textContent = "Could not send the login link. Try again in a moment.";
+    return;
+  }
+
+  authLinkSent = true;
+  authMessage.innerHTML = "<strong>Link sent</strong><br>Check your email";
+  if (adminChoiceButton) {
+    adminChoiceButton.textContent = "OK";
+    adminChoiceButton.classList.add("is-confirmation");
+    adminChoiceButton.focus();
+  }
 });
 authModal?.addEventListener("click", (event) => {
   if (event.target === authModal) {
