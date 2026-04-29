@@ -364,7 +364,7 @@ body:not(.locked) .password-screen {
   min-height: 34px;
   color: #111827;
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
-  font-size: 0.75rem;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -409,10 +409,10 @@ body:not(.locked) .password-screen {
 }
 
 .meal-label {
-  color: #60746f;
+  color: #81918d;
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.05em;
   line-height: 1.2;
   text-transform: uppercase;
