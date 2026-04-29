@@ -931,12 +931,9 @@ body.is-admin .recipe-card-content {
 }
 
 .recipe-ingredients summary {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 6px;
+  display: grid;
+  gap: 5px;
   width: 100%;
-  min-height: 36px;
   padding: 0;
   border-radius: 8px;
   color: #60746f;
@@ -966,16 +963,33 @@ body.is-admin .recipe-card-content {
   content: none;
 }
 
-.recipe-ingredients-chevron {
-  width: 16px;
-  height: 16px;
-  flex: 0 0 auto;
-  stroke: currentColor;
-  transition: transform 0.18s ease;
+.recipe-ingredients-heading {
+  color: #34524c;
+  font-weight: 600;
 }
 
-.recipe-ingredients[open] .recipe-ingredients-chevron {
-  transform: rotate(180deg);
+.recipe-ingredients-preview {
+  display: grid;
+  gap: 3px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.28;
+}
+
+.recipe-ingredients[open] .recipe-ingredients-preview {
+  display: none;
+}
+
+.recipe-ingredients-preview-line {
+  overflow: hidden;
+  color: #526862;
+  opacity: calc(0.72 - (var(--preview-index, 0) * 0.14));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recipe-ingredients-preview-more {
+  opacity: 0.4;
 }
 
 .recipe-ingredients-list {

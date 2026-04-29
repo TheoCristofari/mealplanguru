@@ -1260,18 +1260,36 @@ function createRecipeCard(recipe) {
   const ingredientDetails = document.createElement("details");
   ingredientDetails.className = "recipe-ingredients";
 
+  const ingredientLines = getIngredientLines(recipe.ingredients);
   const ingredientSummary = document.createElement("summary");
-  ingredientSummary.innerHTML = `
-    <span>Ingredients</span>
-    <svg class="recipe-ingredients-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M6 9l6 6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-    </svg>
-  `;
+  const ingredientHeading = document.createElement("span");
+  ingredientHeading.className = "recipe-ingredients-heading";
+  ingredientHeading.textContent = "Ingredients";
+
+  const ingredientPreview = document.createElement("span");
+  ingredientPreview.className = "recipe-ingredients-preview";
+
+  ingredientLines.slice(0, 3).forEach((ingredient, index) => {
+    const previewLine = document.createElement("span");
+    previewLine.className = "recipe-ingredients-preview-line";
+    previewLine.style.setProperty("--preview-index", String(index));
+    previewLine.textContent = ingredient;
+    ingredientPreview.append(previewLine);
+  });
+
+  if (ingredientLines.length > 3) {
+    const previewMore = document.createElement("span");
+    previewMore.className = "recipe-ingredients-preview-line recipe-ingredients-preview-more";
+    previewMore.textContent = "...";
+    ingredientPreview.append(previewMore);
+  }
+
+  ingredientSummary.append(ingredientHeading, ingredientPreview);
 
   const ingredientList = document.createElement("ul");
   ingredientList.className = "recipe-ingredients-list";
 
-  getIngredientLines(recipe.ingredients).forEach((ingredient) => {
+  ingredientLines.forEach((ingredient) => {
     const item = document.createElement("li");
     item.textContent = ingredient;
     ingredientList.append(item);
