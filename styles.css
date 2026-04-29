@@ -818,7 +818,7 @@ h1 {
 
 .recipe-card {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   min-height: 220px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -909,6 +909,7 @@ body.is-admin .recipe-card-content {
 }
 
 .recipe-ingredients {
+  position: relative;
   padding: 0;
   color: var(--muted);
   font-size: 0.86rem;
@@ -917,8 +918,8 @@ body.is-admin .recipe-card-content {
 .recipe-ingredients summary {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  justify-content: flex-start;
+  gap: 6px;
   width: 100%;
   min-height: 36px;
   padding: 0;
@@ -963,14 +964,19 @@ body.is-admin .recipe-card-content {
 }
 
 .recipe-ingredients-list {
+  position: absolute;
+  top: 36px;
+  left: 0;
+  right: 0;
+  z-index: 20;
   max-height: 150px;
   overflow: auto;
   margin: 0;
-  padding: 10px 12px 12px;
-  border-top: 1px solid #edf2f0;
-  border-bottom-right-radius: 8px;
-  border-bottom-left-radius: 8px;
+  padding: 12px;
+  border: 1px solid #edf2f0;
+  border-radius: 8px;
   background: #f8faf9;
+  box-shadow: 0 14px 32px rgba(17, 24, 39, 0.14);
   line-height: 1.4;
   list-style: none;
 }
@@ -1063,6 +1069,8 @@ body.is-admin .recipe-card-content {
   height: 118px;
   object-fit: cover;
   border-bottom: 1px solid var(--line);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
   background: #f5f7f9;
 }
 
