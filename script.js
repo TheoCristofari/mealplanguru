@@ -1464,7 +1464,7 @@ authForm?.addEventListener("submit", async (event) => {
   });
 
   if (error) {
-    authMessage.textContent = "Could not send the login link. Try again in a moment.";
+    authMessage.textContent = `Could not send the login link: ${error.message}`;
     return;
   }
 
