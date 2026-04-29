@@ -1259,14 +1259,7 @@ function createRecipeCard(recipe) {
   deleteButton.className = "delete-card-button";
   deleteButton.type = "button";
   deleteButton.setAttribute("aria-label", `Remove ${recipe.name}`);
-  deleteButton.innerHTML = `
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M3 6h18" stroke-width="2" stroke-linecap="round"></path>
-      <path d="M8 6V4h8v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-      <path d="M6 6l1 15h10l1-15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-      <path d="M10 11v6M14 11v6" stroke-width="2" stroke-linecap="round"></path>
-    </svg>
-  `;
+  deleteButton.textContent = "Remove";
   deleteButton.addEventListener("click", () => openDeleteModal(card));
 
   const editButton = document.createElement("button");
@@ -1285,14 +1278,26 @@ function createRecipeCard(recipe) {
   title.className = "recipe-card-title";
   title.textContent = recipe.name;
 
+  const media = document.createElement("div");
+  media.className = "recipe-card-media";
+
+  if (recipe.photoUrl) {
+    const photo = document.createElement("img");
+    photo.className = "recipe-photo";
+    photo.src = recipe.photoUrl;
+    photo.alt = recipe.name;
+    media.append(photo);
+  }
+
+  if (isAdmin) {
+    media.append(editButton);
+  }
+
   const content = document.createElement("div");
   content.className = "recipe-card-content";
 
   const textContent = document.createElement("div");
   textContent.className = "recipe-card-text";
-
-  const actions = document.createElement("div");
-  actions.className = "recipe-card-actions";
 
   const ingredientDetails = document.createElement("details");
   ingredientDetails.className = "recipe-ingredients";
@@ -1313,16 +1318,8 @@ function createRecipeCard(recipe) {
     ingredientList.append(item);
   });
 
-  if (recipe.photoUrl) {
-    const photo = document.createElement("img");
-    photo.className = "recipe-photo";
-    photo.src = recipe.photoUrl;
-    photo.alt = recipe.name;
-    card.append(photo);
-  }
-
   ingredientDetails.append(ingredientSummary, ingredientList);
-  textContent.append(title, ingredientDetails);
+  textContent.append(title);
 
   if (recipe.label) {
     const label = document.createElement("span");
@@ -1331,12 +1328,12 @@ function createRecipeCard(recipe) {
     textContent.append(label);
   }
 
-  actions.append(deleteButton, editButton);
   if (isAdmin) {
-    content.append(textContent, actions);
-  } else {
-    content.append(textContent);
+    textContent.append(deleteButton);
   }
+  textContent.append(ingredientDetails);
+  content.append(textContent);
+  card.append(media);
   card.append(content);
 
   return card;

@@ -767,6 +767,7 @@ h1 {
 
 .recipe-card-filled {
   display: grid;
+  grid-template-rows: auto 1fr;
   align-content: start;
   min-height: 260px;
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
@@ -775,24 +776,19 @@ h1 {
 .recipe-card-content {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 8px;
-  padding: 14px;
+  padding: 12px;
 }
 
-body.is-admin .recipe-card-content {
-  grid-template-columns: minmax(0, 1fr) 32px;
-}
-
-.recipe-card-actions {
+.recipe-card-text {
   display: grid;
+  gap: 9px;
   align-content: start;
-  gap: 8px;
 }
 
 .recipe-card-title {
   margin: 0;
-  padding: 0 0 10px;
-  font-size: 1rem;
+  padding: 0;
+  font-size: 0.98rem;
   font-weight: 700;
   line-height: 1.25;
 }
@@ -801,30 +797,39 @@ body.is-admin .recipe-card-content {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: 1px solid #fecaca;
-  border-radius: 6px;
-  color: #dc2626;
-  background: #fff5f5;
-  cursor: pointer;
-}
-
-.delete-card-button:hover {
-  border-color: #dc2626;
-  background: #fee2e2;
-}
-
-.edit-card-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: fit-content;
+  min-height: 30px;
+  padding: 0 10px;
   border: 1px solid #d1d5db;
   border-radius: 6px;
   color: #6b7280;
   background: #f9fafb;
+  font-family: Figtree, "Segoe UI", Arial, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.delete-card-button:hover {
+  border-color: #9ca3af;
+  color: #374151;
+  background: #f3f4f6;
+}
+
+.edit-card-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #6b7280;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 4px 14px rgba(17, 24, 39, 0.12);
   cursor: pointer;
 }
 
@@ -833,7 +838,6 @@ body.is-admin .recipe-card-content {
   background: #f3f4f6;
 }
 
-.delete-card-button svg,
 .edit-card-button svg {
   width: 15px;
   height: 15px;
@@ -877,7 +881,6 @@ body.is-admin .recipe-card-content {
   align-items: center;
   justify-content: center;
   min-height: 24px;
-  margin-top: 10px;
   padding: 0 9px;
   border: 0;
   border-radius: 999px;
@@ -918,10 +921,17 @@ body.is-admin .recipe-card-content {
 
 .recipe-photo {
   width: 100%;
-  height: 118px;
+  height: 132px;
   object-fit: cover;
-  border-bottom: 1px solid var(--line);
   background: #f5f7f9;
+}
+
+.recipe-card-media {
+  position: relative;
+  display: grid;
+  min-height: 132px;
+  border-bottom: 1px solid var(--line);
+  background: #edf3f1;
 }
 
 .add-recipe-card {
