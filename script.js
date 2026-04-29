@@ -387,6 +387,7 @@ function renderCalendar() {
           delete mealPlan[assignmentKey];
           saveMealPlan();
           renderCalendar();
+          renderRecipes();
         });
 
         selectedRecipe.append(selectedRecipeText, removeMealButton);
@@ -913,6 +914,7 @@ function appendBuiltInMealOptions(container, dateKey, mealKey) {
       saveMealPlan();
       closeMealDropdowns();
       renderCalendar();
+      renderRecipes();
     });
     builtInGroup.append(builtInButton);
   });
@@ -946,6 +948,7 @@ function appendMealRecipeGroup(container, label, labelRecipes, dateKey, mealKey)
         saveMealPlan();
         closeMealDropdowns();
         renderCalendar();
+        renderRecipes();
       });
       group.append(recipeButton);
     });
@@ -1277,6 +1280,10 @@ function setShoppingView(view) {
   renderShoppingList();
 }
 
+function isRecipePlanned(recipe) {
+  return Object.values(mealPlan).includes(recipe.name);
+}
+
 function createRecipeCard(recipe) {
   const card = document.createElement("article");
   card.className = "recipe-card recipe-card-filled";
@@ -1370,6 +1377,19 @@ function createRecipeCard(recipe) {
   } else {
     content.append(textContent);
   }
+
+  if (isRecipePlanned(recipe)) {
+    const plannedBadge = document.createElement("span");
+    plannedBadge.className = "recipe-planned-badge";
+    plannedBadge.setAttribute("aria-label", "Added to meal planner");
+    plannedBadge.innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M5 12.5l4.2 4.2L19 7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    `;
+    card.append(plannedBadge);
+  }
+
   card.append(content);
 
   return card;
@@ -1549,6 +1569,7 @@ confirmResetButton?.addEventListener("click", () => {
   renderCalendar();
   renderShoppingList();
   closeResetModal();
+  renderRecipes();
 });
 
 recipeModal?.addEventListener("click", (event) => {

@@ -825,6 +825,29 @@ h1 {
   background: var(--surface);
 }
 
+.recipe-planned-badge {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #b7ded2;
+  border-radius: 50%;
+  color: var(--accent);
+  background: #dff3ed;
+  box-shadow: 0 4px 12px rgba(33, 124, 107, 0.12);
+}
+
+.recipe-planned-badge svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+}
+
 .recipe-card-filled {
   display: grid;
   align-content: start;
