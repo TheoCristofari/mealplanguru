@@ -212,7 +212,7 @@ body:not(.locked) .password-screen {
 }
 
 .page {
-  padding: 84px 350px 56px;
+  padding: 42px 350px 56px;
 }
 
 .view {
@@ -1209,7 +1209,7 @@ body.is-admin .recipe-card-content {
   }
 
   .page {
-    padding: 84px 32px 56px;
+    padding: 42px 32px 56px;
   }
 }
 
@@ -1230,7 +1230,7 @@ body.is-admin .recipe-card-content {
   }
 
   .page {
-    padding: 60px 16px 40px;
+    padding: 30px 16px 40px;
   }
 
   .calendar-header {
