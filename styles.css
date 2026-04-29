@@ -393,8 +393,10 @@ body:not(.locked) .password-screen {
 .meal-slots {
   display: grid;
   grid-template-rows: 1fr 1fr;
+  gap: 14px;
   min-height: 220px;
   overflow: hidden;
+  padding: 10px;
   border-radius: inherit;
 }
 
@@ -402,15 +404,17 @@ body:not(.locked) .password-screen {
   position: relative;
   display: grid;
   align-content: start;
-  gap: 8px;
-  padding: 10px;
+  gap: 10px;
+  padding: 0;
 }
 
 .meal-label {
-  color: var(--muted);
+  color: #60746f;
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
   text-transform: uppercase;
 }
 
