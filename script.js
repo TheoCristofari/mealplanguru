@@ -1315,11 +1315,8 @@ function createRecipeCard(recipe) {
   textContent.append(titleRow, ingredientDetails);
 
   if (isAdmin) {
-    actions.append(editButton, deleteButton);
+    actions.append(deleteButton, editButton);
     card.classList.add("has-card-actions");
-    content.append(textContent);
-  } else {
-    content.append(textContent);
   }
 
   if (isRecipePlanned(recipe)) {
@@ -1335,10 +1332,11 @@ function createRecipeCard(recipe) {
     card.classList.add("has-card-actions");
   }
 
-  card.append(content);
+  content.append(textContent);
   if (actions.children.length > 0) {
-    card.append(actions);
+    content.append(actions);
   }
+  card.append(content);
 
   return card;
 }

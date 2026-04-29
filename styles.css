@@ -852,24 +852,21 @@ h1 {
 }
 
 .recipe-card-filled.has-card-actions .recipe-card-content {
-  padding-bottom: 54px;
+  grid-template-columns: minmax(0, 1fr) 32px;
 }
 
 .recipe-card-actions {
-  position: absolute;
-  right: 12px;
-  bottom: 12px;
-  z-index: 6;
-  display: flex;
+  display: grid;
   align-items: center;
-  justify-content: flex-end;
+  justify-items: center;
+  align-content: start;
   gap: 8px;
 }
 
 .recipe-card-title-row {
   display: grid;
   justify-items: start;
-  gap: 8px;
+  gap: 16px;
 }
 
 .recipe-card-title {
