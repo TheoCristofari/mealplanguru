@@ -1325,11 +1325,12 @@ function createRecipeCard(recipe) {
   ingredientDetails.className = "recipe-ingredients";
 
   const ingredientSummary = document.createElement("summary");
-  ingredientSummary.textContent = "See Ingredients";
-
-  ingredientDetails.addEventListener("toggle", () => {
-    ingredientSummary.textContent = ingredientDetails.open ? "Hide Ingredients" : "See Ingredients";
-  });
+  ingredientSummary.innerHTML = `
+    <span>Ingredients</span>
+    <svg class="recipe-ingredients-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M6 9l6 6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+  `;
 
   const ingredientList = document.createElement("ul");
   ingredientList.className = "recipe-ingredients-list";
@@ -1349,14 +1350,19 @@ function createRecipeCard(recipe) {
   }
 
   ingredientDetails.append(ingredientSummary, ingredientList);
-  textContent.append(title, ingredientDetails);
+
+  const titleRow = document.createElement("div");
+  titleRow.className = "recipe-card-title-row";
+  titleRow.append(title);
 
   if (recipe.label) {
     const label = document.createElement("span");
     label.className = `recipe-label recipe-label-${recipe.label}`;
     label.textContent = recipe.label;
-    textContent.append(label);
+    titleRow.append(label);
   }
+
+  textContent.append(titleRow, ingredientDetails);
 
   actions.append(deleteButton, editButton);
   if (isAdmin) {
