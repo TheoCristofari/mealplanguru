@@ -20,9 +20,6 @@ const shoppingList = document.querySelector("[data-shopping-list]");
 const shoppingViewButtons = document.querySelectorAll("[data-shopping-view]");
 const shoppingUpdatedModal = document.querySelector("[data-shopping-updated-modal]");
 const closeShoppingUpdatedButton = document.querySelector("[data-close-shopping-updated]");
-const exportRecipesButton = document.querySelector("[data-export-recipes]");
-const importRecipesButton = document.querySelector("[data-import-recipes]");
-const importRecipesFile = document.querySelector("[data-import-recipes-file]");
 const labelInput = document.querySelector("[data-label-input]");
 const labelOptions = document.querySelectorAll("[data-label-option]");
 const recipeFilterButtons = document.querySelectorAll("[data-recipe-filter]");
@@ -239,10 +236,6 @@ function updateAdminState(user) {
 
   if (addRecipeButton) {
     addRecipeButton.hidden = !isAdmin;
-  }
-
-  if (importRecipesButton) {
-    importRecipesButton.hidden = !isAdmin;
   }
 
   renderRecipes();
@@ -666,70 +659,6 @@ async function loadInitialRecipes() {
     syncRecipesToSupabase();
   }
 }
-
-async function exportRecipes() {
-  const backup = {
-    exportedAt: new Date().toISOString(),
-    recipes,
-  };
-  const content = JSON.stringify(backup, null, 2);
-  const todayLabel = new Date().toISOString().slice(0, 10);
-  const suggestedName = `mealplanguru-recipes-${todayLabel}.json`;
-
-  if (window.showSaveFilePicker) {
-    const fileHandle = await window.showSaveFilePicker({
-      suggestedName,
-      types: [
-        {
-          description: "JSON file",
-          accept: { "application/json": [".json"] },
-        },
-      ],
-    });
-    const writable = await fileHandle.createWritable();
-    await writable.write(content);
-    await writable.close();
-    return;
-  }
-
-  const blob = new Blob([content], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = suggestedName;
-  link.click();
-  URL.revokeObjectURL(url);
-}
-
-function importRecipesFromFile(file) {
-  const reader = new FileReader();
-  reader.addEventListener("load", async () => {
-    try {
-      const parsed = JSON.parse(String(reader.result || "{}"));
-      const importedRecipes = Array.isArray(parsed) ? parsed : parsed.recipes;
-
-      if (!Array.isArray(importedRecipes)) {
-        return;
-      }
-
-      const existingNames = new Set(recipes.map((recipe) => recipe.name.toLowerCase()));
-      const recipesToAdd = importedRecipes
-        .map(normalizeRecipeRecord)
-        .filter(Boolean)
-        .filter((recipe) => !existingNames.has(recipe.name.toLowerCase()));
-
-      recipes = [...recipes, ...recipesToAdd];
-      saveRecipes();
-      syncRecipesToSupabase();
-      renderRecipes();
-      renderCalendar();
-    } catch {
-      // Keep the import quiet for now; invalid files simply do not change the page.
-    }
-  });
-  reader.readAsText(file);
-}
-
 
 function cleanRecipeIngredients(ingredients) {
   return String(ingredients || "")
@@ -1447,30 +1376,6 @@ shoppingViewButtons.forEach((button) => {
   button.addEventListener("click", () => {
     setShoppingView(button.dataset.shoppingView);
   });
-});
-exportRecipesButton?.addEventListener("click", async () => {
-  try {
-    await exportRecipes();
-  } catch {
-    // Usually means the user cancelled the save dialog.
-  }
-});
-importRecipesButton?.addEventListener("click", () => {
-  if (!isAdmin) {
-    openAuthModal();
-    return;
-  }
-
-  importRecipesFile?.click();
-});
-importRecipesFile?.addEventListener("change", () => {
-  const file = importRecipesFile.files?.[0];
-
-  if (file) {
-    importRecipesFromFile(file);
-  }
-
-  importRecipesFile.value = "";
 });
 labelOptions.forEach((option) => {
   option.addEventListener("click", () => {

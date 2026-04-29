@@ -740,13 +740,6 @@ h1 {
   gap: 18px;
 }
 
-.recipe-actions {
-  display: flex;
-  justify-content: flex-start;
-  gap: 10px;
-  margin-top: 20px;
-}
-
 .shopping-list {
   display: grid;
   gap: 18px;
