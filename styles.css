@@ -994,7 +994,7 @@ body.is-admin .recipe-card-content {
   color: #8b9a96;
   border: 1px dashed #dfe7e4;
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
-  font-size: 0.72rem;
+  font-size: 14px;
   font-weight: 600;
   line-height: 1;
   cursor: pointer;
