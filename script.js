@@ -46,6 +46,19 @@ const SUPABASE_IMAGE_BUCKET = "recipe-images";
 const ADMIN_EMAIL = "theo@companydebt.com";
 const ADMIN_DISPLAY_NAME = "Théo";
 const ADMIN_REDIRECT_URL = "https://theocristofari.github.io/mealplanguru/";
+const ADMIN_LOGIN_ICON = `
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M20 21a8 8 0 0 0-16 0" stroke-width="2" stroke-linecap="round"></path>
+    <circle cx="12" cy="7" r="4" stroke-width="2"></circle>
+  </svg>
+`;
+const ADMIN_SIGN_OUT_ICON = `
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+    <path d="M16 17l5-5-5-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+    <path d="M21 12H9" stroke-width="2" stroke-linecap="round"></path>
+  </svg>
+`;
 const supabaseClient = window.supabase?.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) || null;
 const RECIPE_LABEL_ORDER = ["pasta", "rice", "potato", "noodles", "soup", "quiche", ""];
 const RECIPE_LABEL_NAMES = {
@@ -213,6 +226,7 @@ function updateAdminState(user) {
     authButton.setAttribute("aria-pressed", String(isAdmin));
     authButton.setAttribute("aria-label", isAdmin ? "Sign out" : "Admin login");
     authButton.setAttribute("title", isAdmin ? "Sign out" : "Admin login");
+    authButton.innerHTML = isAdmin ? ADMIN_SIGN_OUT_ICON : ADMIN_LOGIN_ICON;
   }
 
   if (addRecipeButton) {
