@@ -826,7 +826,7 @@ h1 {
   width: 26px;
   height: 26px;
   border: 1px solid #b7ded2;
-  border-radius: 50%;
+  border-radius: 6px;
   color: var(--accent);
   background: #dff3ed;
 }

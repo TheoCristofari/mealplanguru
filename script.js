@@ -1339,7 +1339,7 @@ function createRecipeCard(recipe) {
 
   textContent.append(titleRow, ingredientDetails);
 
-  actions.append(deleteButton, editButton);
+  actions.append(editButton, deleteButton);
   card.classList.add("has-card-actions");
 
   if (isRecipePlanned(recipe)) {
