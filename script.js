@@ -44,6 +44,7 @@ const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_r_My8zwj297QswRnj9Dvmw_6vMeJBhj
 const SUPABASE_RECIPE_TABLE = "recipes";
 const SUPABASE_IMAGE_BUCKET = "recipe-images";
 const ADMIN_EMAIL = "theo@companydebt.com";
+const ADMIN_REDIRECT_URL = "https://theocristofari.github.io/mealplanguru/";
 const supabaseClient = window.supabase?.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) || null;
 const RECIPE_LABEL_ORDER = ["pasta", "rice", "potato", "noodles", "soup", "quiche", ""];
 const RECIPE_LABEL_NAMES = {
@@ -1433,7 +1434,7 @@ authForm?.addEventListener("submit", async (event) => {
   const { error } = await supabaseClient.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: window.location.href.split("#")[0],
+      emailRedirectTo: ADMIN_REDIRECT_URL,
     },
   });
 
