@@ -195,6 +195,7 @@ let mealPlan = loadMealPlan();
 let shoppingItems = loadShoppingList();
 let shoppingRecipes = loadShoppingRecipes();
 let manualShoppingItems = loadManualShoppingList();
+let checkedShoppingItems = loadCheckedShoppingItems();
 let shoppingView = "category";
 let recipeFilter = "all";
 let editingRecipeId = null;
@@ -797,6 +798,18 @@ function saveManualShoppingList() {
   localStorage.setItem("mealPlanGuruManualShoppingList", JSON.stringify(manualShoppingItems));
 }
 
+function loadCheckedShoppingItems() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem("mealPlanGuruCheckedShoppingItems")) || []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveCheckedShoppingItems() {
+  localStorage.setItem("mealPlanGuruCheckedShoppingItems", JSON.stringify(Array.from(checkedShoppingItems)));
+}
+
 function getMealPlanKey(dateKey, mealKey) {
   return `${dateKey}:${mealKey}`;
 }
@@ -1185,6 +1198,43 @@ function createShoppingPanel(title, body) {
   return panel;
 }
 
+function createShoppingCheckItem(label, key, extraContent = null) {
+  const listItem = document.createElement("li");
+  listItem.className = "shopping-check-item";
+  listItem.classList.toggle("is-checked", checkedShoppingItems.has(key));
+
+  const toggleButton = document.createElement("button");
+  toggleButton.type = "button";
+  toggleButton.className = "shopping-check-button";
+  toggleButton.setAttribute("aria-label", `Toggle ${label}`);
+  toggleButton.setAttribute("aria-pressed", String(checkedShoppingItems.has(key)));
+
+  const itemText = document.createElement("span");
+  itemText.className = "shopping-check-text";
+  itemText.textContent = label;
+
+  const toggleChecked = () => {
+    if (checkedShoppingItems.has(key)) {
+      checkedShoppingItems.delete(key);
+    } else {
+      checkedShoppingItems.add(key);
+    }
+
+    saveCheckedShoppingItems();
+    listItem.classList.toggle("is-checked", checkedShoppingItems.has(key));
+    toggleButton.setAttribute("aria-pressed", String(checkedShoppingItems.has(key)));
+  };
+
+  toggleButton.addEventListener("click", toggleChecked);
+  itemText.addEventListener("click", toggleChecked);
+
+  listItem.append(toggleButton, itemText);
+  if (extraContent) {
+    listItem.append(extraContent);
+  }
+  return listItem;
+}
+
 function renderShoppingByCategory() {
   if (shoppingItems.length === 0) {
     const empty = document.createElement("p");
@@ -1203,9 +1253,8 @@ function renderShoppingByCategory() {
   Object.entries(groupedItems).forEach(([category, items]) => {
     const list = document.createElement("ul");
     items.forEach((item) => {
-      const listItem = document.createElement("li");
-      listItem.textContent = formatShoppingItem(item);
-      list.append(listItem);
+      const label = formatShoppingItem(item);
+      list.append(createShoppingCheckItem(label, `auto:category:${category}:${label}`));
     });
 
     shoppingList.append(createShoppingPanel(category, list));
@@ -1224,9 +1273,8 @@ function renderShoppingByRecipe() {
   shoppingRecipes.forEach((recipe) => {
     const list = document.createElement("ul");
     recipe.ingredients.forEach((item) => {
-      const listItem = document.createElement("li");
-      listItem.textContent = formatShoppingItem(item);
-      list.append(listItem);
+      const label = formatShoppingItem(item);
+      list.append(createShoppingCheckItem(label, `auto:recipe:${recipe.id}:${label}`));
     });
 
     shoppingList.append(createShoppingPanel(recipe.name, list));
@@ -1249,11 +1297,6 @@ function renderManualShoppingList() {
   }
 
   manualShoppingItems.forEach((item, index) => {
-    const listItem = document.createElement("li");
-
-    const itemText = document.createElement("span");
-    itemText.textContent = item;
-
     const removeButton = document.createElement("button");
     removeButton.type = "button";
     removeButton.className = "manual-shopping-remove";
@@ -1265,13 +1308,14 @@ function renderManualShoppingList() {
       </svg>
     `;
     removeButton.addEventListener("click", () => {
+      checkedShoppingItems.delete(`manual:${item}`);
+      saveCheckedShoppingItems();
       manualShoppingItems.splice(index, 1);
       saveManualShoppingList();
       renderManualShoppingList();
     });
 
-    listItem.append(itemText, removeButton);
-    manualShoppingList.append(listItem);
+    manualShoppingList.append(createShoppingCheckItem(item, `manual:${item}`, removeButton));
   });
 }
 
