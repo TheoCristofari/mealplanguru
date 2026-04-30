@@ -198,6 +198,10 @@ function showView(viewName) {
       link.removeAttribute("aria-current");
     }
   });
+
+  if (selectedView === "recipes") {
+    scheduleRecipePreviewRefresh();
+  }
 }
 
 function renderCalendar() {
@@ -935,6 +939,25 @@ function compactPreviewForWrappedTitle(card, ingredientLines) {
   renderIngredientPreview(preview, ingredientLines, limit);
 }
 
+function refreshRecipePreviewLimits() {
+  if (!recipeGrid || recipeGrid.closest("[data-view]")?.hidden) {
+    return;
+  }
+
+  recipeGrid.querySelectorAll(".recipe-card-filled").forEach((card) => {
+    const recipe = recipes.find((item) => item.id === card.dataset.recipeId);
+    if (recipe) {
+      compactPreviewForWrappedTitle(card, getIngredientLines(recipe.ingredients));
+    }
+  });
+}
+
+function scheduleRecipePreviewRefresh() {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(refreshRecipePreviewLimits);
+  });
+}
+
 function parseAmount(value) {
   if (!value) {
     return null;
@@ -1605,6 +1628,7 @@ function renderRecipes() {
     recipeGrid.insertBefore(card, addRecipeButton);
     compactPreviewForWrappedTitle(card, getIngredientLines(recipe.ingredients));
   });
+  scheduleRecipePreviewRefresh();
 }
 
 function setRecipeFilter(filter) {
