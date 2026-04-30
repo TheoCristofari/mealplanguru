@@ -80,115 +80,6 @@ const MEAL_DROPDOWN_COLUMNS = [
 ];
 
 
-const PANTRY_INGREDIENTS = new Set([
-  "1 tbsp oil",
-  "1 tbsp olive oil",
-  "olive oil",
-  "salt",
-  "salt & pepper",
-  "pepper",
-]);
-
-const INGREDIENT_HARMONISATIONS = {
-  "1 aubergine": "1 aubergine",
-  "1 avocat": "1 avocado",
-  "1 bay leaf": "1 bay leaf",
-  "1 block tofu": "1 block tofu",
-  "1 can corn": "1 can corn",
-  "1 can kidney beans": "1 can kidney beans",
-  "1 can mutti": "1 can chopped tomatoes",
-  "1 canelini beans": "1 can cannellini beans",
-  "1 carrot": "1 carrot",
-  "1 celery": "1 celery stick",
-  "1 celery stick": "1 celery stick",
-  "1 courgette": "1 courgette",
-  "1 cucumber": "1 cucumber",
-  "1 garlic clove": "1 garlic clove",
-  "1 onion": "1 onion",
-  "1 pack cherry tomatoes": "1 pack cherry tomatoes",
-  "1 pack nori": "1 pack nori",
-  "1 pack potatoes": "1 pack potatoes",
-  "1 pack smoked tofu": "1 pack smoked tofu",
-  "1 pack sushi rice": "1 pack sushi rice",
-  "1 pack wraps": "1 pack wraps",
-  "1 pepper": "1 pepper",
-  "1 red pepper": "1 red pepper",
-  "1 small onion": "1 onion",
-  "1 spring onion": "1 spring onion",
-  "1 tbsp chinese black vinegar": "1 tbsp Chinese black vinegar",
-  "1 tbsp curry powder": "1 tbsp curry powder",
-  "1 tbsp soy sauce": "1 tbsp soy sauce",
-  "1 tbsp tahini or chinese sesame paste": "1 tbsp tahini or Chinese sesame paste",
-  "1 tbsp tomato puree": "1 tbsp tomato puree",
-  "1 tbsp vegan butter": "1 tbsp vegan butter",
-  "1 thick cream": "1 thick cream",
-  "1 tsp chili oil": "1 tsp chili oil",
-  "1 tsp cumin seeds": "1 tsp cumin seeds",
-  "1 tsp grated ginger": "1 tsp grated ginger",
-  "1 tsp oregano": "1 tsp oregano",
-  "1 tsp paprika": "1 tsp paprika",
-  "1 tsp thyme": "1 tsp thyme",
-  "1 tsp turmeric": "1 tsp turmeric",
-  "1/2 tsp chili flakes": "1/2 tsp chili flakes",
-  "1/2 tsp oregano": "1/2 tsp oregano",
-  "1/2 tsp rosemary": "1/2 tsp rosemary",
-  "1/2 tsp thyme": "1/2 tsp thyme",
-  "100g mushrooms": "100 g mushrooms",
-  "100g red lentils": "100 g red lentils",
-  "100g rice": "100 g rice",
-  "100g vegan mince (soy or mushroom-based)": "100 g vegan mince",
-  "100ml coconut milk": "100 ml coconut milk",
-  "150g arborio rice": "150 g arborio rice",
-  "150g dried wheat noodles": "150 g dried wheat noodles",
-  "150g mushrooms": "150 g mushrooms",
-  "150g pasta (penne or rigatoni)": "150 g pasta",
-  "150g red lentils": "150 g red lentils",
-  "150g spaghetti": "150 g spaghetti",
-  "2 corn on the cob": "2 corn on the cob",
-  "2 garlic cloves": "2 garlic cloves",
-  "2 tbsp nutritional yeast": "2 tbsp nutritional yeast",
-  "200g lentils (cooked or tinned)": "200 g lentils",
-  "200ml coconut milk": "200 ml coconut milk",
-  "200ml coconut milk or oat cream": "200 ml coconut milk or oat cream",
-  "200ml veg stock": "200 ml veg stock",
-  "250g vegan mince or lentils": "250 g vegan mince or lentils",
-  "400g potatoes": "400 g potatoes",
-  "400g tin butter beans": "1 can butter beans",
-  "400g tin cannellini beans": "1 can cannellini beans",
-  "400g tin chickpeas": "1 can chickpeas",
-  "400g tin chopped tomatoes": "1 can chopped tomatoes",
-  "500ml veg stock": "500 ml veg stock",
-  "6-8 vegan meatballs": "6-8 vegan meatballs",
-  "60g orzo": "60 g orzo",
-  "butter beans": "1 can butter beans",
-  "cashews": "cashews",
-  "coconut milk": "coconut milk",
-  "concentre de tomate": "tomato puree",
-  "coriander (optional)": "coriander",
-  "cornflour": "cornflour",
-  "cream": "cream",
-  "fromage a tartiner": "cream cheese",
-  "good tofu": "tofu",
-  "grated cheese": "grated cheese",
-  "handful spinach": "1 handful spinach",
-  "mayo": "mayo",
-  "olives noires (denoyautees)": "pitted black olives",
-  "onion": "1 onion",
-  "orrechiete": "orecchiette",
-  "pak choi or tenderstem broccoli": "pak choi or tenderstem broccoli",
-  "parsley": "parsley",
-  "patates": "potatoes",
-  "pitah bread": "pita bread",
-  "pois chiches": "1 can chickpeas",
-  "rice vinegar": "rice vinegar",
-  "riz": "rice",
-  "salad": "salad",
-  "shortcrust patry": "shortcrust pastry",
-  "splash plant milk": "splash plant milk",
-  "splash white wine (optional)": "splash white wine",
-  "tomates sechees": "sun-dried tomatoes",
-};
-
 let pendingDeleteCard = null;
 let recipes = [];
 let mealPlan = loadMealPlan();
@@ -538,22 +429,30 @@ async function loadSupabaseRecipes() {
   return data.map(recipeFromSupabaseRow).filter(Boolean);
 }
 
-async function saveRecipeToSupabase(recipe) {
+async function saveRecipeToSupabase(recipe, sortIndex = 0) {
   if (!supabaseClient || !isAdmin) {
-    return;
+    throw new Error("You need to be logged in as admin to save recipes.");
   }
 
-  await supabaseClient
+  const { error } = await supabaseClient
     .from(SUPABASE_RECIPE_TABLE)
-    .upsert(recipeToSupabaseRow(recipe, recipes.findIndex((item) => item.id === recipe.id)));
+    .upsert(recipeToSupabaseRow(recipe, sortIndex));
+
+  if (error) {
+    throw error;
+  }
 }
 
 async function deleteRecipeFromSupabase(recipeId) {
   if (!supabaseClient || !recipeId || !isAdmin) {
-    return;
+    throw new Error("You need to be logged in as admin to delete recipes.");
   }
 
-  await supabaseClient.from(SUPABASE_RECIPE_TABLE).delete().eq("id", recipeId);
+  const { error } = await supabaseClient.from(SUPABASE_RECIPE_TABLE).delete().eq("id", recipeId);
+
+  if (error) {
+    throw error;
+  }
 }
 
 async function syncRecipesToSupabase() {
@@ -678,14 +577,9 @@ async function loadInitialRecipes() {
 function cleanRecipeIngredients(ingredients) {
   return String(ingredients || "")
     .split("\n")
-    .map(normalizeIngredientLine)
-    .filter((ingredient) => ingredient && !PANTRY_INGREDIENTS.has(ingredient.toLowerCase()))
+    .map((ingredient) => ingredient.trim())
+    .filter(Boolean)
     .join("\n");
-}
-
-function normalizeIngredientLine(ingredient) {
-  const line = String(ingredient || "").trim();
-  return INGREDIENT_HARMONISATIONS[line.toLowerCase()] || line;
 }
 
 function inferRecipeLabel(recipe) {
@@ -1022,10 +916,6 @@ function normalizeUnit(unit) {
   return singularize(unit);
 }
 
-function titleCase(text) {
-  return text.replace(/\b\w/g, (letter) => letter.toUpperCase());
-}
-
 function formatAmount(amount) {
   if (amount === null) {
     return "";
@@ -1095,7 +985,7 @@ function formatShoppingItem(item) {
   const name = item.unit ? item.item : pluralize(item.item, item.amount);
 
   if (!amount) {
-    return titleCase(item.item);
+    return item.item;
   }
 
   if (item.unit) {
@@ -1106,7 +996,7 @@ function formatShoppingItem(item) {
 }
 
 function formatShoppingIngredient(item) {
-  return titleCase(item.original || formatShoppingItem(item));
+  return item.original || formatShoppingItem(item);
 }
 
 function sortShoppingLabels(labels) {
@@ -1675,6 +1565,14 @@ confirmDeleteButton?.addEventListener("click", async () => {
 
   const recipeId = pendingDeleteCard?.dataset.recipeId;
   const recipeToDelete = recipes.find((recipe) => recipe.id === recipeId);
+  try {
+    await deleteRecipeFromSupabase(recipeId);
+  } catch (error) {
+    console.error(error);
+    alert("The recipe could not be deleted from Supabase. Please try again.");
+    return;
+  }
+
   recipes = recipes.filter((recipe) => recipe.id !== recipeId);
   if (recipeToDelete) {
     Object.keys(mealPlan).forEach((key) => {
@@ -1686,7 +1584,6 @@ confirmDeleteButton?.addEventListener("click", async () => {
     renderCalendar();
   }
   saveRecipes();
-  await deleteRecipeFromSupabase(recipeId);
   pendingDeleteCard?.remove();
   closeDeleteModal();
 });
@@ -1809,9 +1706,12 @@ recipeForm?.addEventListener("submit", async (event) => {
     return;
   }
 
+  let nextRecipes = recipes;
+  let nextMealPlan = { ...mealPlan };
+
   if (editingRecipeId) {
     const oldRecipe = existingRecipe;
-    recipes = recipes.map((recipe) => {
+    nextRecipes = recipes.map((recipe) => {
       if (recipe.id !== editingRecipeId) {
         return recipe;
       }
@@ -1826,28 +1726,38 @@ recipeForm?.addEventListener("submit", async (event) => {
     });
 
     if (oldRecipe && oldRecipe.name !== recipeName) {
-      Object.keys(mealPlan).forEach((key) => {
-        if (mealPlan[key] === oldRecipe.name) {
-          mealPlan[key] = recipeName;
+      Object.keys(nextMealPlan).forEach((key) => {
+        if (nextMealPlan[key] === oldRecipe.name) {
+          nextMealPlan[key] = recipeName;
         }
       });
-      saveMealPlan();
     }
   } else {
-    recipes.unshift({
+    nextRecipes = [{
       id: recipeId,
       name: recipeName,
       ingredients,
       label,
       photoUrl,
-    });
+    }, ...recipes];
   }
 
-  saveRecipes();
   const savedRecipe = editingRecipeId
-    ? recipes.find((recipe) => recipe.id === editingRecipeId)
-    : recipes[0];
-  await saveRecipeToSupabase(savedRecipe);
+    ? nextRecipes.find((recipe) => recipe.id === editingRecipeId)
+    : nextRecipes[0];
+
+  try {
+    await saveRecipeToSupabase(savedRecipe, nextRecipes.findIndex((recipe) => recipe.id === savedRecipe.id));
+  } catch (error) {
+    console.error(error);
+    alert("The recipe could not be saved to Supabase. Please try again.");
+    return;
+  }
+
+  recipes = nextRecipes;
+  mealPlan = nextMealPlan;
+  saveRecipes();
+  saveMealPlan();
   renderRecipes();
   renderCalendar();
   recipeForm.reset();
