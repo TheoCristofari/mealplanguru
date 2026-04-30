@@ -255,7 +255,6 @@ body:not(.locked) .password-screen {
 }
 
 .calendar-header {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -269,9 +268,14 @@ body:not(.locked) .password-screen {
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
 }
 
+.calendar-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 28px;
+  font-family: Figtree, "Segoe UI", Arial, sans-serif;
+}
+
 .calendar-actions {
-  position: absolute;
-  right: 350px;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -300,7 +304,7 @@ body:not(.locked) .password-screen {
   padding: 0 18px;
   border: 0;
   border-radius: 9px;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--muted);
   background: transparent;
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
   font-size: 14px;
@@ -309,7 +313,7 @@ body:not(.locked) .password-screen {
 }
 
 .reset-planner-button:hover {
-  color: #ffffff;
+  color: #374151;
   text-decoration: underline;
   text-underline-offset: 4px;
 }
@@ -320,10 +324,10 @@ body:not(.locked) .password-screen {
   justify-content: center;
   min-height: 34px;
   padding: 0 12px;
-  border: 1px solid #ffffff;
+  border: 1px solid var(--accent);
   border-radius: 6px;
-  color: #3d7064;
-  background: #ffffff;
+  color: #ffffff;
+  background: var(--accent);
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
   font-size: 0.82rem;
   font-weight: 700;
@@ -331,8 +335,8 @@ body:not(.locked) .password-screen {
 }
 
 .update-shopping-button:hover {
-  color: #174f44;
-  background: #eef4f2;
+  color: #ffffff;
+  background: #176557;
 }
 
 .calendar-actions .update-shopping-button {
@@ -1584,9 +1588,6 @@ h1 {
     padding-left: 32px;
   }
 
-  .calendar-actions {
-    right: 32px;
-  }
 }
 
 @media (max-width: 760px) {
@@ -1614,14 +1615,9 @@ h1 {
     padding: 44px 16px;
   }
 
-  .calendar-header {
-    display: grid;
-    gap: 24px;
-  }
-
-  .calendar-actions {
-    position: static;
+  .calendar-toolbar {
     justify-self: center;
+    justify-content: center;
   }
 
   .calendar {
