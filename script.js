@@ -18,6 +18,8 @@ const confirmResetButton = document.querySelector("[data-confirm-reset]");
 const updateShoppingButton = document.querySelector("[data-update-shopping]");
 const shoppingList = document.querySelector("[data-shopping-list]");
 const shoppingViewButtons = document.querySelectorAll("[data-shopping-view]");
+const manualShoppingList = document.querySelector("[data-manual-shopping-list]");
+const manualShoppingForm = document.querySelector("[data-manual-shopping-form]");
 const shoppingUpdatedModal = document.querySelector("[data-shopping-updated-modal]");
 const closeShoppingUpdatedButton = document.querySelector("[data-close-shopping-updated]");
 const adminRequiredModal = document.querySelector("[data-admin-required-modal]");
@@ -192,6 +194,7 @@ let recipes = [];
 let mealPlan = loadMealPlan();
 let shoppingItems = loadShoppingList();
 let shoppingRecipes = loadShoppingRecipes();
+let manualShoppingItems = loadManualShoppingList();
 let shoppingView = "category";
 let recipeFilter = "all";
 let editingRecipeId = null;
@@ -782,6 +785,18 @@ function saveShoppingRecipes() {
   localStorage.setItem("mealPlanGuruShoppingRecipes", JSON.stringify(shoppingRecipes));
 }
 
+function loadManualShoppingList() {
+  try {
+    return JSON.parse(localStorage.getItem("mealPlanGuruManualShoppingList")) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveManualShoppingList() {
+  localStorage.setItem("mealPlanGuruManualShoppingList", JSON.stringify(manualShoppingItems));
+}
+
 function getMealPlanKey(dateKey, mealKey) {
   return `${dateKey}:${mealKey}`;
 }
@@ -1146,12 +1161,37 @@ function renderShoppingList() {
   renderShoppingByCategory();
 }
 
+function createShoppingPanel(title, body) {
+  const panel = document.createElement("details");
+  panel.className = "shopping-category shopping-panel";
+  panel.open = true;
+
+  const summary = document.createElement("summary");
+  summary.className = "shopping-panel-header";
+
+  const label = document.createElement("span");
+  label.textContent = title;
+
+  const icon = document.createElement("span");
+  icon.className = "shopping-collapse-icon";
+  icon.setAttribute("aria-hidden", "true");
+  icon.textContent = "⌄";
+
+  const panelBody = document.createElement("div");
+  panelBody.className = "shopping-panel-body";
+  panelBody.append(body);
+
+  summary.append(label, icon);
+  panel.append(summary, panelBody);
+  return panel;
+}
+
 function renderShoppingByCategory() {
   if (shoppingItems.length === 0) {
     const empty = document.createElement("p");
     empty.className = "shopping-empty";
     empty.textContent = "Use Update Shopping from the Meal Planner to build your list.";
-    shoppingList.append(empty);
+    shoppingList.append(createShoppingPanel("Shopping List", empty));
     return;
   }
 
@@ -1162,12 +1202,6 @@ function renderShoppingByCategory() {
   }, {});
 
   Object.entries(groupedItems).forEach(([category, items]) => {
-    const section = document.createElement("section");
-    section.className = "shopping-category";
-
-    const title = document.createElement("h2");
-    title.textContent = category;
-
     const list = document.createElement("ul");
     items.forEach((item) => {
       const listItem = document.createElement("li");
@@ -1175,8 +1209,7 @@ function renderShoppingByCategory() {
       list.append(listItem);
     });
 
-    section.append(title, list);
-    shoppingList.append(section);
+    shoppingList.append(createShoppingPanel(category, list));
   });
 }
 
@@ -1185,17 +1218,11 @@ function renderShoppingByRecipe() {
     const empty = document.createElement("p");
     empty.className = "shopping-empty";
     empty.textContent = "Use Update Shopping from the Meal Planner to build your list.";
-    shoppingList.append(empty);
+    shoppingList.append(createShoppingPanel("Shopping List", empty));
     return;
   }
 
   shoppingRecipes.forEach((recipe) => {
-    const section = document.createElement("section");
-    section.className = "shopping-category";
-
-    const title = document.createElement("h2");
-    title.textContent = recipe.name;
-
     const list = document.createElement("ul");
     recipe.ingredients.forEach((item) => {
       const listItem = document.createElement("li");
@@ -1203,8 +1230,44 @@ function renderShoppingByRecipe() {
       list.append(listItem);
     });
 
-    section.append(title, list);
-    shoppingList.append(section);
+    shoppingList.append(createShoppingPanel(recipe.name, list));
+  });
+}
+
+function renderManualShoppingList() {
+  if (!manualShoppingList) {
+    return;
+  }
+
+  manualShoppingList.innerHTML = "";
+
+  if (manualShoppingItems.length === 0) {
+    const empty = document.createElement("li");
+    empty.className = "manual-shopping-empty";
+    empty.textContent = "No manual items yet.";
+    manualShoppingList.append(empty);
+    return;
+  }
+
+  manualShoppingItems.forEach((item, index) => {
+    const listItem = document.createElement("li");
+
+    const itemText = document.createElement("span");
+    itemText.textContent = item;
+
+    const removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.className = "manual-shopping-remove";
+    removeButton.setAttribute("aria-label", `Remove ${item}`);
+    removeButton.textContent = "Remove";
+    removeButton.addEventListener("click", () => {
+      manualShoppingItems.splice(index, 1);
+      saveManualShoppingList();
+      renderManualShoppingList();
+    });
+
+    listItem.append(itemText, removeButton);
+    manualShoppingList.append(listItem);
   });
 }
 
@@ -1420,6 +1483,21 @@ shoppingViewButtons.forEach((button) => {
   button.addEventListener("click", () => {
     setShoppingView(button.dataset.shoppingView);
   });
+});
+manualShoppingForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const input = manualShoppingForm.elements.manualItem;
+  const item = String(input.value || "").trim();
+
+  if (!item) {
+    return;
+  }
+
+  manualShoppingItems.push(item);
+  saveManualShoppingList();
+  renderManualShoppingList();
+  manualShoppingForm.reset();
+  input.focus();
 });
 labelOptions.forEach((option) => {
   option.addEventListener("click", () => {
@@ -1679,6 +1757,7 @@ async function initializeApp() {
   renderCalendar();
   renderRecipes();
   renderShoppingList();
+  renderManualShoppingList();
 }
 
 initializeApp();

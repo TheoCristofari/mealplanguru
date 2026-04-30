@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Meal Plan Guru</title>
-    <link rel="stylesheet" href="styles.css?v=20260429-collapsed-card-height">
+    <link rel="stylesheet" href="styles.css?v=20260430-shopping-columns">
   </head>
   <body class="locked">
     <div class="password-screen" data-password-screen>
@@ -88,16 +88,35 @@
         <div class="section-header">
           <h1 id="shopping-title" class="section-title">My Shopping List</h1>
         </div>
-        <div class="shopping-view-toggle" aria-label="Shopping list display">
-          <button class="shopping-view-button active" type="button" data-shopping-view="category" aria-pressed="true">
-            Categories
-          </button>
-          <button class="shopping-view-button" type="button" data-shopping-view="recipe" aria-pressed="false">
-            Recipes
-          </button>
-        </div>
-        <div class="shopping-list" data-shopping-list>
-          <p class="shopping-empty">Use Update Shopping from the Meal Planner to build your list.</p>
+        <div class="shopping-layout">
+          <div class="shopping-auto-column">
+            <div class="shopping-view-toggle" aria-label="Shopping list display">
+              <button class="shopping-view-button active" type="button" data-shopping-view="category" aria-pressed="true">
+                Categories
+              </button>
+              <button class="shopping-view-button" type="button" data-shopping-view="recipe" aria-pressed="false">
+                Recipes
+              </button>
+            </div>
+            <div class="shopping-list" data-shopping-list>
+              <p class="shopping-empty">Use Update Shopping from the Meal Planner to build your list.</p>
+            </div>
+          </div>
+          <aside class="shopping-manual-column" aria-label="Manual shopping list">
+            <details class="shopping-category shopping-panel" open>
+              <summary class="shopping-panel-header">
+                <span>Manual List</span>
+                <span class="shopping-collapse-icon" aria-hidden="true">⌄</span>
+              </summary>
+              <div class="shopping-panel-body">
+                <ul class="manual-shopping-list" data-manual-shopping-list></ul>
+                <form class="manual-shopping-form" data-manual-shopping-form>
+                  <input type="text" name="manualItem" placeholder="Add ingredient" autocomplete="off">
+                  <button type="submit" aria-label="Add ingredient">+</button>
+                </form>
+              </div>
+            </details>
+          </aside>
         </div>
       </section>
     </main>
@@ -193,6 +212,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="script.js?v=20260429-collapsed-card-height"></script>
+    <script src="script.js?v=20260430-shopping-columns"></script>
   </body>
 </html>
