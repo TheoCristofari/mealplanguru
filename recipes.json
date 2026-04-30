@@ -3,14 +3,14 @@
     {
       "id": "sheet-minestrone",
       "name": "Minestrone",
-      "ingredients": "1 onion\n1 carrot\n1 courgette\n1 celery stick\n1 can chopped tomatoes\n1 can cannellini beans\norecchiette\ngrated cheese",
+      "ingredients": "1 onion\n1 carrot\n1 courgette\n1 celery stick\n1 can chopped tomatoes\n1 can cannellini beans\n250g orecchiette\ngrated cheese",
       "photoUrl": "images/minestrone.jpg",
-      "label": ""
+      "label": "pasta"
     },
     {
       "id": "sheet-sushi",
       "name": "Sushi",
-      "ingredients": "1 pack nori\n1 pack sushi rice\nrice vinegar\nmayo\n1 pack smoked tofu\n1 avocado\n1 cucumber\n1 carrot\n1 pepper",
+      "ingredients": "1 pack nori\n1 pack sushi rice\n1 pack smoked tofu\n1 avocado\n1 cucumber\n1 carrot\n1 pepper\n1 bottle rice vinegar",
       "photoUrl": "images/sushi.jpg",
       "label": "rice"
     },
@@ -24,7 +24,7 @@
     {
       "id": "sheet-burritos",
       "name": "Burritos",
-      "ingredients": "1 pack wraps\ngrated cheese\n1 pack potatoes\n1 block tofu\n1 onion\n1 thick cream\n1 pack cherry tomatoes\n1 avocado\n2 corn on the cob",
+      "ingredients": "2 packs wraps\n1 pack potatoes\n1 block tofu\n1 onion\n1 thick cream\n1 pack cherry tomatoes\n1 avocado\n1 pack corn on the cob\ngrated cheese",
       "photoUrl": "images/burritos.jpg",
       "label": "potato"
     },
@@ -68,21 +68,21 @@
       "name": "Chickpea Curry",
       "ingredients": "1 onion\n2 garlic cloves\n1 tsp grated ginger\n1 tbsp curry powder\n1 can chopped tomatoes\n1 can chickpeas\n100 ml coconut milk\n1 handful spinach\ncoriander",
       "photoUrl": "images/chickpea-curry.jpg",
-      "label": ""
+      "label": "rice"
     },
     {
       "id": "sheet-dahl",
       "name": "Dahl",
       "ingredients": "1 onion\n2 garlic cloves\n1 tsp grated ginger\n1 tsp turmeric\n1 tsp cumin seeds\n150 g red lentils\n500 ml veg stock\n200 ml coconut milk\ncoriander",
       "photoUrl": "images/dahl.jpg",
-      "label": ""
+      "label": "rice"
     },
     {
       "id": "sheet-cassoulet",
       "name": "Cassoulet",
       "ingredients": "1 onion\n1 carrot\n1 celery stick\n2 garlic cloves\n1 can chopped tomatoes\n1 can cannellini beans\n1 can butter beans\n200 ml veg stock\n1 tsp thyme\n1 bay leaf",
       "photoUrl": "images/cassoulet.webp",
-      "label": ""
+      "label": "rice"
     },
     {
       "id": "sheet-marry-me-lentils",
