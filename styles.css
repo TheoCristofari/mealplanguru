@@ -314,11 +314,6 @@ body:not(.locked) .password-screen {
   cursor: pointer;
 }
 
-.reset-planner-button:hover {
-  color: var(--accent);
-  background: #ffffff;
-}
-
 .update-shopping-button {
   display: inline-flex;
   align-items: center;
