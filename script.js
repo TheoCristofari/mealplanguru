@@ -1106,7 +1106,7 @@ function formatShoppingItem(item) {
 }
 
 function formatShoppingIngredient(item) {
-  return item.original || formatShoppingItem(item);
+  return titleCase(item.original || formatShoppingItem(item));
 }
 
 function getPlannedRecipes() {
