@@ -32,6 +32,7 @@ body.locked {
 
 body.locked .topbar,
 body.locked .page,
+body.locked .site-footer,
 body.locked .modal-overlay {
   display: none;
 }
@@ -221,6 +222,23 @@ body:not(.locked) .password-screen {
 
 .view[hidden] {
   display: none;
+}
+
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  padding: 24px;
+  color: #ffffff;
+  background: #174f44;
+  font-family: Figtree, "Segoe UI", Arial, sans-serif;
+}
+
+.site-footer p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .section-header {
