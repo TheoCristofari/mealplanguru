@@ -1315,7 +1315,46 @@ function renderManualShoppingList() {
       renderManualShoppingList();
     });
 
-    manualShoppingList.append(createShoppingCheckItem(item, `manual:${item}`, removeButton));
+    const listItem = createShoppingCheckItem(item, `manual:${item}`, removeButton);
+    const itemText = listItem.querySelector(".shopping-check-text");
+    itemText.addEventListener("dblclick", () => {
+      const input = document.createElement("input");
+      input.className = "manual-shopping-edit-input";
+      input.value = item;
+
+      const finishEdit = (shouldSave) => {
+        const nextItem = input.value.trim();
+
+        if (shouldSave && nextItem) {
+          checkedShoppingItems.delete(`manual:${item}`);
+          if (listItem.classList.contains("is-checked")) {
+            checkedShoppingItems.add(`manual:${nextItem}`);
+          }
+          manualShoppingItems[index] = nextItem;
+          saveCheckedShoppingItems();
+          saveManualShoppingList();
+        }
+
+        renderManualShoppingList();
+      };
+
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          finishEdit(true);
+        }
+
+        if (event.key === "Escape") {
+          finishEdit(false);
+        }
+      });
+      input.addEventListener("blur", () => finishEdit(true));
+
+      itemText.replaceWith(input);
+      input.focus();
+      input.select();
+    });
+
+    manualShoppingList.append(listItem);
   });
 }
 

@@ -949,6 +949,15 @@ h1 {
   font: inherit;
 }
 
+.manual-shopping-edit-input {
+  min-width: 0;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font: inherit;
+}
+
 .manual-shopping-form button {
   border: 1px solid var(--accent);
   border-radius: 6px;
