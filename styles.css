@@ -412,7 +412,7 @@ body:not(.locked) .password-screen {
 .meal-slots {
   display: grid;
   grid-template-rows: auto auto;
-  gap: 18px;
+  gap: 9px;
   min-height: 220px;
   overflow: hidden;
   padding: 14px;
