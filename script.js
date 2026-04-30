@@ -568,7 +568,7 @@ async function syncRecipesToSupabase() {
 
 async function loadRecipeFile() {
   try {
-    const response = await fetch(RECIPE_DATA_URL, { cache: "no-cache" });
+    const response = await fetch(RECIPE_DATA_URL, { cache: "no-store" });
 
     if (!response.ok) {
       return [];
@@ -664,8 +664,9 @@ function mergeRecipeData(fileRecipes, savedRecipes) {
 async function loadInitialRecipes() {
   const supabaseRecipes = await loadSupabaseRecipes();
   const fileRecipes = await loadRecipeFile();
+  const cachedRecipes = loadRecipes();
   const baselineRecipes = supabaseRecipes.length > 0 ? supabaseRecipes : fileRecipes;
-  recipes = baselineRecipes;
+  recipes = baselineRecipes.length > 0 ? baselineRecipes : cachedRecipes;
   saveRecipes();
   backfillRecipeLabels();
 
