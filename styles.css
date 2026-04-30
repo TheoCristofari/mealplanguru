@@ -389,7 +389,7 @@ body:not(.locked) .password-screen {
 
 .calendar-day {
   position: relative;
-  min-height: 220px;
+  min-height: 188px;
   padding: 0;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -413,7 +413,7 @@ body:not(.locked) .password-screen {
   display: grid;
   grid-template-rows: auto auto;
   gap: 9px;
-  min-height: 206px;
+  min-height: 188px;
   overflow: hidden;
   padding: 14px 14px 8px;
   border-radius: inherit;
