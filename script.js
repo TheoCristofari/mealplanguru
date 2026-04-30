@@ -1331,7 +1331,7 @@ function renderShoppingByCategory() {
   if (shoppingItems.length === 0) {
     const empty = document.createElement("p");
     empty.className = "shopping-empty";
-    empty.textContent = "Use Update Shopping from the Meal Planner to build your list.";
+    empty.textContent = "Update your planner to get your shopping list";
     shoppingList.append(createShoppingPanel("Shopping List", empty));
     return;
   }
@@ -1356,7 +1356,7 @@ function renderShoppingByRecipe() {
   if (shoppingRecipes.length === 0) {
     const empty = document.createElement("p");
     empty.className = "shopping-empty";
-    empty.textContent = "Use Update Shopping from the Meal Planner to build your list.";
+    empty.textContent = "Update your planner to get your shopping list";
     shoppingList.append(createShoppingPanel("Shopping List", empty));
     return;
   }

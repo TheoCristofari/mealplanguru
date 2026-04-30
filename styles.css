@@ -809,8 +809,11 @@ h1 {
 }
 
 .shopping-empty {
+  display: grid;
+  min-height: 38px;
+  place-items: center;
   margin: 0;
-  padding: 18px 0 0;
+  padding: 0 12px;
   border: 1px dashed var(--line);
   border-radius: 8px;
   color: var(--muted);
