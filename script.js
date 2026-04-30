@@ -873,14 +873,7 @@ function appendMealRecipeGroup(container, label, labelRecipes, dateKey, mealKey)
 function positionMealDropdown(dropdown, mealSlot, dateKey) {
   const rect = mealSlot.getBoundingClientRect();
   const gap = 6;
-  const dropdownHeight = dropdown.scrollHeight;
-  const roomBelow = window.innerHeight - rect.bottom;
-  const slotNumber = Number(String(dateKey).replace("slot-", ""));
-  const shouldOpenBelow = slotNumber >= 1 && slotNumber <= 7;
-  const top =
-    shouldOpenBelow || roomBelow >= dropdownHeight + gap
-      ? rect.bottom + window.scrollY + gap
-      : Math.max(window.scrollY + gap, rect.top + window.scrollY - dropdownHeight - gap);
+  const top = rect.bottom + window.scrollY + gap;
 
   const width = Math.min(720, Math.max(520, window.innerWidth - 32));
   const left = Math.min(
