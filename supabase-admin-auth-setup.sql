@@ -1,6 +1,12 @@
 -- Run this after the site has been updated with admin login.
 -- It keeps public recipe/image reading, but locks recipe and image changes to the admin email.
 
+drop policy if exists "Anyone can read recipes" on public.recipes;
+create policy "Anyone can read recipes"
+on public.recipes for select
+to anon, authenticated
+using (true);
+
 drop policy if exists "Anyone can add recipes" on public.recipes;
 drop policy if exists "Anyone can edit recipes" on public.recipes;
 drop policy if exists "Anyone can delete recipes" on public.recipes;
@@ -27,6 +33,12 @@ using (auth.jwt() ->> 'email' = 'theo@companydebt.com');
 drop policy if exists "Anyone can upload recipe images" on storage.objects;
 drop policy if exists "Anyone can update recipe images" on storage.objects;
 drop policy if exists "Anyone can delete recipe images" on storage.objects;
+
+drop policy if exists "Anyone can read recipe images" on storage.objects;
+create policy "Anyone can read recipe images"
+on storage.objects for select
+to anon, authenticated
+using (bucket_id = 'recipe-images');
 
 drop policy if exists "Admin can upload recipe images" on storage.objects;
 create policy "Admin can upload recipe images"

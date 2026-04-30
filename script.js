@@ -1569,7 +1569,7 @@ confirmDeleteButton?.addEventListener("click", async () => {
     await deleteRecipeFromSupabase(recipeId);
   } catch (error) {
     console.error(error);
-    alert("The recipe could not be deleted from Supabase. Please try again.");
+    alert(`The recipe could not be deleted from Supabase: ${error.message || "Please try again."}`);
     return;
   }
 
@@ -1750,7 +1750,7 @@ recipeForm?.addEventListener("submit", async (event) => {
     await saveRecipeToSupabase(savedRecipe, nextRecipes.findIndex((recipe) => recipe.id === savedRecipe.id));
   } catch (error) {
     console.error(error);
-    alert("The recipe could not be saved to Supabase. Please try again.");
+    alert(`The recipe could not be saved to Supabase: ${error.message || "Please try again."}`);
     return;
   }
 
