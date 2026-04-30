@@ -64,6 +64,8 @@ const ADMIN_SIGN_OUT_ICON = `
 `;
 const supabaseClient = window.supabase?.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) || null;
 const RECIPE_LABEL_ORDER = ["pasta", "rice", "potato", "noodles", "soup", "quiche", ""];
+const DEFAULT_INGREDIENT_PREVIEW_LIMIT = 4;
+const COMPACT_INGREDIENT_PREVIEW_LIMIT = 3;
 const RECIPE_LABEL_NAMES = {
   pasta: "Pasta",
   rice: "Rice",
@@ -854,6 +856,39 @@ function getIngredientLines(ingredients) {
     .filter(Boolean);
 }
 
+function renderIngredientPreview(container, ingredientLines, limit = DEFAULT_INGREDIENT_PREVIEW_LIMIT) {
+  container.innerHTML = "";
+
+  ingredientLines.slice(0, limit).forEach((ingredient, index) => {
+    const previewLine = document.createElement("span");
+    previewLine.className = "recipe-ingredients-preview-line";
+    previewLine.style.setProperty("--preview-index", String(index));
+    previewLine.textContent = ingredient;
+    container.append(previewLine);
+  });
+
+  if (ingredientLines.length > limit) {
+    const previewMore = document.createElement("span");
+    previewMore.className = "recipe-ingredients-preview-line recipe-ingredients-preview-more";
+    previewMore.textContent = "...";
+    container.append(previewMore);
+  }
+}
+
+function compactPreviewForWrappedTitle(card, ingredientLines) {
+  const title = card.querySelector(".recipe-card-title");
+  const preview = card.querySelector(".recipe-ingredients-preview");
+
+  if (!title || !preview) {
+    return;
+  }
+
+  const lineHeight = parseFloat(getComputedStyle(title).lineHeight);
+  const lineCount = lineHeight > 0 ? Math.round(title.getBoundingClientRect().height / lineHeight) : 1;
+  const limit = lineCount > 1 ? COMPACT_INGREDIENT_PREVIEW_LIMIT : DEFAULT_INGREDIENT_PREVIEW_LIMIT;
+  renderIngredientPreview(preview, ingredientLines, limit);
+}
+
 function parseAmount(value) {
   if (!value) {
     return null;
@@ -1347,21 +1382,7 @@ function createRecipeCard(recipe) {
   const ingredientSummary = document.createElement("summary");
   const ingredientPreview = document.createElement("span");
   ingredientPreview.className = "recipe-ingredients-preview";
-
-  ingredientLines.slice(0, 4).forEach((ingredient, index) => {
-    const previewLine = document.createElement("span");
-    previewLine.className = "recipe-ingredients-preview-line";
-    previewLine.style.setProperty("--preview-index", String(index));
-    previewLine.textContent = ingredient;
-    ingredientPreview.append(previewLine);
-  });
-
-  if (ingredientLines.length > 4) {
-    const previewMore = document.createElement("span");
-    previewMore.className = "recipe-ingredients-preview-line recipe-ingredients-preview-more";
-    previewMore.textContent = "...";
-    ingredientPreview.append(previewMore);
-  }
+  renderIngredientPreview(ingredientPreview, ingredientLines);
 
   ingredientSummary.append(ingredientPreview);
 
@@ -1434,7 +1455,9 @@ function renderRecipes() {
   recipes
     .filter((recipe) => recipeFilter === "all" || recipe.label === recipeFilter)
     .forEach((recipe) => {
-    recipeGrid.insertBefore(createRecipeCard(recipe), addRecipeButton);
+    const card = createRecipeCard(recipe);
+    recipeGrid.insertBefore(card, addRecipeButton);
+    compactPreviewForWrappedTitle(card, getIngredientLines(recipe.ingredients));
   });
 }
 
