@@ -1175,7 +1175,6 @@ function createShoppingPanel(title, body) {
   const icon = document.createElement("span");
   icon.className = "shopping-collapse-icon";
   icon.setAttribute("aria-hidden", "true");
-  icon.textContent = "⌄";
 
   const panelBody = document.createElement("div");
   panelBody.className = "shopping-panel-body";

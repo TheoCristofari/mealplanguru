@@ -833,11 +833,17 @@ h1 {
   border-radius: 6px;
   color: var(--muted);
   background: #f9fafb;
-  transition: transform 0.16s ease;
 }
 
-.shopping-panel[open] .shopping-collapse-icon {
-  transform: rotate(180deg);
+.shopping-collapse-icon::before {
+  content: "+";
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.shopping-panel[open] .shopping-collapse-icon::before {
+  content: "-";
 }
 
 .shopping-panel-body {
