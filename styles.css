@@ -270,7 +270,7 @@ body:not(.locked) .password-screen {
 
 .calendar-toolbar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   margin-bottom: 28px;
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
 }
