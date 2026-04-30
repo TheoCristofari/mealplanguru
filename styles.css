@@ -270,7 +270,7 @@ body:not(.locked) .password-screen {
 
 .calendar-toolbar {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   margin-bottom: 28px;
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
 }
@@ -278,11 +278,13 @@ body:not(.locked) .password-screen {
 .calendar-actions {
   display: flex;
   align-items: center;
-  gap: 14px;
+  width: fit-content;
+  gap: 0;
   margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f9fafb;
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
 }
 
@@ -300,22 +302,21 @@ body:not(.locked) .password-screen {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
-  padding: 0 18px;
+  min-height: 34px;
+  padding: 0 12px;
   border: 0;
-  border-radius: 9px;
+  border-radius: 6px;
   color: var(--muted);
   background: transparent;
-  font-family: Figtree, "Segoe UI", Arial, sans-serif;
-  font-size: 14px;
-  font-weight: 600;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
   cursor: pointer;
 }
 
 .reset-planner-button:hover {
-  color: #374151;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  color: var(--accent);
+  background: #ffffff;
 }
 
 .update-shopping-button {
@@ -324,27 +325,24 @@ body:not(.locked) .password-screen {
   justify-content: center;
   min-height: 34px;
   padding: 0 12px;
-  border: 1px solid var(--accent);
+  border: 0;
   border-radius: 6px;
-  color: #ffffff;
-  background: var(--accent);
-  font-family: Figtree, "Segoe UI", Arial, sans-serif;
-  font-size: 0.82rem;
+  color: var(--accent);
+  background: #ffffff;
+  font: inherit;
+  font-size: 0.86rem;
   font-weight: 700;
+  box-shadow: 0 1px 4px rgba(17, 24, 39, 0.08);
   cursor: pointer;
 }
 
 .update-shopping-button:hover {
-  color: #ffffff;
-  background: #176557;
+  color: var(--accent);
+  background: #ffffff;
 }
 
 .calendar-actions .update-shopping-button {
-  min-height: 44px;
-  padding: 0 20px;
-  border-radius: 9px;
-  font-size: 14px;
-  font-weight: 600;
+  min-height: 34px;
 }
 
 .icon-button {
