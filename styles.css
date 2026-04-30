@@ -442,19 +442,23 @@ body:not(.locked) .password-screen {
   border-top: 1px solid #edf2f0;
 }
 
-.add-meal-card {
+.add-meal-card,
+.planned-recipe {
   display: grid;
+  height: 54px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-family: Figtree, "Segoe UI", Arial, sans-serif;
+  cursor: pointer;
+}
+
+.add-meal-card {
   gap: 4px;
   place-items: center;
-  min-height: 50px;
-  padding: 10px 12px;
   border: 1px dashed #dfe7e4;
-  border-radius: 8px;
   color: #8b9a96;
   background: #fbfdfc;
-  font-family: Figtree, "Segoe UI", Arial, sans-serif;
   line-height: 1;
-  cursor: pointer;
 }
 
 .calendar-day:hover .add-meal-card {
@@ -480,26 +484,13 @@ body:not(.locked) .password-screen {
 .planned-recipe {
   --planned-text: var(--accent);
   --planned-bg: var(--accent-soft);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 24px;
+  position: relative;
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
-  gap: 6px;
-  min-height: 50px;
-  padding: 10px 12px;
-  border-radius: 8px;
   color: var(--planned-text);
   background: var(--planned-bg);
-  font-family: Figtree, "Segoe UI", Arial, sans-serif;
   font-size: 14px;
   font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-}
-
-.planned-recipe:hover {
-  filter: saturate(1.06);
-  box-shadow: 0 6px 16px rgba(17, 24, 39, 0.08);
-  transform: translateY(-1px);
 }
 
 .planned-recipe-built-in {
@@ -544,6 +535,9 @@ body:not(.locked) .password-screen {
 }
 
 .remove-meal-button {
+  position: absolute;
+  top: 50%;
+  right: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -556,6 +550,7 @@ body:not(.locked) .password-screen {
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
+  transform: translateY(-50%);
   transition: opacity 0.15s ease;
 }
 
