@@ -271,7 +271,7 @@ body:not(.locked) .password-screen {
 
 .calendar-actions {
   position: absolute;
-  right: 0;
+  right: 350px;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -1582,6 +1582,10 @@ h1 {
   .calendar-header {
     padding-right: 32px;
     padding-left: 32px;
+  }
+
+  .calendar-actions {
+    right: 32px;
   }
 }
 
