@@ -811,7 +811,7 @@ function toggleMealDropdown(mealSlot, dateKey, mealKey) {
   }
 
   document.body.append(dropdown);
-  positionMealDropdown(dropdown, mealSlot);
+  positionMealDropdown(dropdown, mealSlot, dateKey);
 }
 
 function appendBuiltInMealOptions(container, dateKey, mealKey) {
@@ -870,13 +870,15 @@ function appendMealRecipeGroup(container, label, labelRecipes, dateKey, mealKey)
   container.append(group);
 }
 
-function positionMealDropdown(dropdown, mealSlot) {
+function positionMealDropdown(dropdown, mealSlot, dateKey) {
   const rect = mealSlot.getBoundingClientRect();
   const gap = 6;
   const dropdownHeight = dropdown.scrollHeight;
   const roomBelow = window.innerHeight - rect.bottom;
+  const slotNumber = Number(String(dateKey).replace("slot-", ""));
+  const shouldOpenBelow = slotNumber >= 1 && slotNumber <= 7;
   const top =
-    roomBelow >= dropdownHeight + gap
+    shouldOpenBelow || roomBelow >= dropdownHeight + gap
       ? rect.bottom + window.scrollY + gap
       : Math.max(window.scrollY + gap, rect.top + window.scrollY - dropdownHeight - gap);
 
