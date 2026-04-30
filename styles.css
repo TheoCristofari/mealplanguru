@@ -743,7 +743,7 @@ h1 {
 
 .shopping-layout {
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr);
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
   align-items: start;
   gap: 24px;
   font-family: Figtree, "Segoe UI", Arial, sans-serif;
