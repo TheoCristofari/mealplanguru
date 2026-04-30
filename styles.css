@@ -484,7 +484,8 @@ body:not(.locked) .password-screen {
   grid-template-columns: minmax(0, 1fr) 24px;
   align-items: center;
   gap: 6px;
-  padding: 12px;
+  min-height: 50px;
+  padding: 10px 12px;
   border-radius: 8px;
   color: var(--planned-text);
   background: var(--planned-bg);
