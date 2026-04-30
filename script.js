@@ -1105,6 +1105,10 @@ function formatShoppingItem(item) {
   return `${amount} ${name}`;
 }
 
+function formatShoppingIngredient(item) {
+  return item.original || formatShoppingItem(item);
+}
+
 function getPlannedRecipes() {
   const plannedRecipeNames = Object.values(mealPlan).filter((name) => name && name !== "Leftovers");
   return plannedRecipeNames
@@ -1131,12 +1135,15 @@ function buildShoppingList() {
       if (current) {
         current.amount =
           current.amount !== null && parsed.amount !== null ? current.amount + parsed.amount : null;
+        current.count = (current.count || 1) + 1;
+        current.original = formatShoppingItem(current);
         return;
       }
 
       ingredientMap.set(key, {
         ...parsed,
         amount: parsed.amount === null ? null : parsed.amount,
+        count: 1,
         category: getIngredientCategory(parsed.item),
       });
     });
@@ -1253,7 +1260,7 @@ function renderShoppingByCategory() {
   Object.entries(groupedItems).forEach(([category, items]) => {
     const list = document.createElement("ul");
     items.forEach((item) => {
-      const label = formatShoppingItem(item);
+      const label = formatShoppingIngredient(item);
       list.append(createShoppingCheckItem(label, `auto:category:${category}:${label}`));
     });
 
@@ -1273,7 +1280,7 @@ function renderShoppingByRecipe() {
   shoppingRecipes.forEach((recipe) => {
     const list = document.createElement("ul");
     recipe.ingredients.forEach((item) => {
-      const label = formatShoppingItem(item);
+      const label = formatShoppingIngredient(item);
       list.append(createShoppingCheckItem(label, `auto:recipe:${recipe.id}:${label}`));
     });
 
