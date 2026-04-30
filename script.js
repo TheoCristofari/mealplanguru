@@ -664,9 +664,8 @@ function mergeRecipeData(fileRecipes, savedRecipes) {
 async function loadInitialRecipes() {
   const supabaseRecipes = await loadSupabaseRecipes();
   const fileRecipes = await loadRecipeFile();
-  const savedRecipes = loadRecipes();
   const baselineRecipes = supabaseRecipes.length > 0 ? supabaseRecipes : fileRecipes;
-  recipes = supabaseRecipes.length > 0 ? baselineRecipes : mergeRecipeData(baselineRecipes, savedRecipes);
+  recipes = baselineRecipes;
   saveRecipes();
   backfillRecipeLabels();
 
