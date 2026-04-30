@@ -11,6 +11,16 @@ create table if not exists public.recipes (
 
 alter table public.recipes enable row level security;
 
+create table if not exists public.shopping_extras (
+  id text primary key,
+  item text not null,
+  sort_order integer default 0,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+alter table public.shopping_extras enable row level security;
+
 drop policy if exists "Anyone can read recipes" on public.recipes;
 create policy "Anyone can read recipes"
 on public.recipes for select
@@ -37,6 +47,31 @@ drop policy if exists "Anyone can delete recipes" on public.recipes;
 create policy "Anyone can delete recipes"
 on public.recipes for delete
 to anon
+using (true);
+
+drop policy if exists "Anyone can read shopping extras" on public.shopping_extras;
+create policy "Anyone can read shopping extras"
+on public.shopping_extras for select
+to anon, authenticated
+using (true);
+
+drop policy if exists "Anyone can add shopping extras" on public.shopping_extras;
+create policy "Anyone can add shopping extras"
+on public.shopping_extras for insert
+to anon, authenticated
+with check (true);
+
+drop policy if exists "Anyone can edit shopping extras" on public.shopping_extras;
+create policy "Anyone can edit shopping extras"
+on public.shopping_extras for update
+to anon, authenticated
+using (true)
+with check (true);
+
+drop policy if exists "Anyone can delete shopping extras" on public.shopping_extras;
+create policy "Anyone can delete shopping extras"
+on public.shopping_extras for delete
+to anon, authenticated
 using (true);
 
 insert into storage.buckets (id, name, public)

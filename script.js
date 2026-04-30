@@ -45,6 +45,7 @@ const RECIPE_DATA_URL = "recipes.json";
 const SUPABASE_URL = "https://beguxpppyngjphetlviv.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_r_My8zwj297QswRnj9Dvmw_6vMeJBhj";
 const SUPABASE_RECIPE_TABLE = "recipes";
+const SUPABASE_EXTRAS_TABLE = "shopping_extras";
 const SUPABASE_IMAGE_BUCKET = "recipe-images";
 const ADMIN_EMAIL = "theo@companydebt.com";
 const ADMIN_DISPLAY_NAME = "Théo";
@@ -684,7 +685,9 @@ function saveShoppingRecipes() {
 
 function loadManualShoppingList() {
   try {
-    return JSON.parse(localStorage.getItem("mealPlanGuruManualShoppingList")) || [];
+    return (JSON.parse(localStorage.getItem("mealPlanGuruManualShoppingList")) || [])
+      .map(normalizeManualShoppingItem)
+      .filter(Boolean);
   } catch {
     return [];
   }
@@ -692,6 +695,49 @@ function loadManualShoppingList() {
 
 function saveManualShoppingList() {
   localStorage.setItem("mealPlanGuruManualShoppingList", JSON.stringify(manualShoppingItems));
+}
+
+function createManualShoppingItemId() {
+  if (crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+
+  return `extra-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function normalizeManualShoppingItem(item) {
+  if (typeof item === "string") {
+    const label = item.trim();
+    return label ? { id: createManualShoppingItemId(), item: label } : null;
+  }
+
+  const label = String(item?.item || "").trim();
+  if (!label) {
+    return null;
+  }
+
+  return {
+    id: item.id || createManualShoppingItemId(),
+    item: label,
+  };
+}
+
+async function loadInitialManualShoppingList() {
+  const supabaseItems = await loadSupabaseManualShoppingList();
+
+  if (supabaseItems.length > 0) {
+    manualShoppingItems = supabaseItems;
+    saveManualShoppingList();
+    return;
+  }
+
+  manualShoppingItems = manualShoppingItems.map(normalizeManualShoppingItem).filter(Boolean);
+  saveManualShoppingList();
+  try {
+    await syncManualShoppingListToSupabase();
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 function loadCheckedShoppingItems() {
@@ -1047,6 +1093,75 @@ function sortShoppingLabels(labels) {
   });
 }
 
+function manualShoppingItemToSupabaseRow(item, index = 0) {
+  return {
+    id: item.id,
+    item: item.item,
+    sort_order: index,
+  };
+}
+
+function manualShoppingItemFromSupabaseRow(row) {
+  return normalizeManualShoppingItem({
+    id: row.id,
+    item: row.item,
+  });
+}
+
+async function loadSupabaseManualShoppingList() {
+  if (!supabaseClient) {
+    return [];
+  }
+
+  const { data, error } = await supabaseClient
+    .from(SUPABASE_EXTRAS_TABLE)
+    .select("id,item,sort_order")
+    .order("sort_order", { ascending: true })
+    .order("item", { ascending: true });
+
+  if (error || !Array.isArray(data)) {
+    return [];
+  }
+
+  return data.map(manualShoppingItemFromSupabaseRow).filter(Boolean);
+}
+
+async function saveManualShoppingItemToSupabase(item, sortIndex = 0) {
+  if (!supabaseClient) {
+    throw new Error("Supabase is not available.");
+  }
+
+  const { error } = await supabaseClient
+    .from(SUPABASE_EXTRAS_TABLE)
+    .upsert(manualShoppingItemToSupabaseRow(item, sortIndex));
+
+  if (error) {
+    throw error;
+  }
+}
+
+async function deleteManualShoppingItemFromSupabase(itemId) {
+  if (!supabaseClient || !itemId) {
+    throw new Error("Supabase is not available.");
+  }
+
+  const { error } = await supabaseClient.from(SUPABASE_EXTRAS_TABLE).delete().eq("id", itemId);
+
+  if (error) {
+    throw error;
+  }
+}
+
+async function syncManualShoppingListToSupabase() {
+  if (!supabaseClient || manualShoppingItems.length === 0) {
+    return;
+  }
+
+  await supabaseClient
+    .from(SUPABASE_EXTRAS_TABLE)
+    .upsert(manualShoppingItems.map(manualShoppingItemToSupabaseRow));
+}
+
 function getPlannedRecipes() {
   const plannedRecipeNames = Object.values(mealPlan).filter((name) => name && name !== "Leftovers");
   return plannedRecipeNames
@@ -1239,7 +1354,8 @@ function renderManualShoppingList() {
     return;
   }
 
-  manualShoppingItems.forEach((item, index) => {
+  manualShoppingItems.forEach((manualItem, index) => {
+    const item = manualItem.item;
     const removeButton = document.createElement("button");
     removeButton.type = "button";
     removeButton.className = "manual-shopping-remove";
@@ -1250,7 +1366,15 @@ function renderManualShoppingList() {
         <path d="M6 6l12 12" stroke-width="2" stroke-linecap="round"></path>
       </svg>
     `;
-    removeButton.addEventListener("click", () => {
+    removeButton.addEventListener("click", async () => {
+      try {
+        await deleteManualShoppingItemFromSupabase(manualItem.id);
+      } catch (error) {
+        console.error(error);
+        alert(`The extra item could not be removed from Supabase: ${error.message || "Please try again."}`);
+        return;
+      }
+
       checkedShoppingItems.delete(`manual:${item}`);
       saveCheckedShoppingItems();
       manualShoppingItems.splice(index, 1);
@@ -1265,15 +1389,28 @@ function renderManualShoppingList() {
       input.className = "manual-shopping-edit-input";
       input.value = item;
 
-      const finishEdit = (shouldSave) => {
+      const finishEdit = async (shouldSave) => {
         const nextItem = input.value.trim();
 
         if (shouldSave && nextItem) {
+          const nextManualItem = {
+            ...manualItem,
+            item: nextItem,
+          };
+          try {
+            await saveManualShoppingItemToSupabase(nextManualItem, index);
+          } catch (error) {
+            console.error(error);
+            alert(`The extra item could not be saved to Supabase: ${error.message || "Please try again."}`);
+            renderManualShoppingList();
+            return;
+          }
+
           checkedShoppingItems.delete(`manual:${item}`);
           if (listItem.classList.contains("is-checked")) {
             checkedShoppingItems.add(`manual:${nextItem}`);
           }
-          manualShoppingItems[index] = nextItem;
+          manualShoppingItems[index] = nextManualItem;
           saveCheckedShoppingItems();
           saveManualShoppingList();
         }
@@ -1502,7 +1639,7 @@ shoppingViewButtons.forEach((button) => {
     setShoppingView(button.dataset.shoppingView);
   });
 });
-manualShoppingForm?.addEventListener("submit", (event) => {
+manualShoppingForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
   const input = manualShoppingForm.elements.manualItem;
   const item = String(input.value || "").trim();
@@ -1511,7 +1648,20 @@ manualShoppingForm?.addEventListener("submit", (event) => {
     return;
   }
 
-  manualShoppingItems.push(item);
+  const manualItem = {
+    id: createManualShoppingItemId(),
+    item,
+  };
+
+  try {
+    await saveManualShoppingItemToSupabase(manualItem, manualShoppingItems.length);
+  } catch (error) {
+    console.error(error);
+    alert(`The extra item could not be saved to Supabase: ${error.message || "Please try again."}`);
+    return;
+  }
+
+  manualShoppingItems.push(manualItem);
   saveManualShoppingList();
   renderManualShoppingList();
   manualShoppingForm.reset();
@@ -1791,6 +1941,7 @@ async function initializeApp() {
   initializePasswordGate();
   await initializeAuth();
   await loadInitialRecipes();
+  await loadInitialManualShoppingList();
   showView(window.location.hash.replace("#", ""));
   renderCalendar();
   renderRecipes();
