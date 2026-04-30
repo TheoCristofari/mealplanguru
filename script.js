@@ -1047,17 +1047,26 @@ function parseIngredient(line) {
   };
 }
 
-function getIngredientCategory(item) {
+function getIngredientCategory(ingredient) {
+  const item = typeof ingredient === "string" ? ingredient : ingredient.item;
+  const original = typeof ingredient === "string" ? ingredient : ingredient.original;
+  const text = `${item || ""} ${original || ""}`.toLowerCase();
   const categories = [
-    ["Produce", ["onion", "garlic", "tomato", "potato", "carrot", "celery", "pepper", "lettuce", "spinach", "lemon", "lime", "apple", "banana", "mushroom", "herb", "parsley", "coriander", "basil", "avocado", "broccoli", "courgette", "zucchini"]],
+    ["Produce", ["onion", "garlic", "fresh tomato", "cherry tomato", "corn on the cob", "potato", "carrot", "celery", "pepper", "lettuce", "spinach", "lemon", "lime", "apple", "banana", "mushroom", "asparagus", "herb", "avocado", "broccoli", "courgette", "zucchini", "aubergine", "pak choi", "spring onion"]],
     ["Meat & Fish", ["chicken", "beef", "pork", "lamb", "turkey", "sausage", "bacon", "fish", "salmon", "tuna", "prawn", "shrimp"]],
-    ["Dairy & Eggs", ["milk", "cheese", "butter", "yogurt", "yoghurt", "cream", "egg", "parmesan", "mozzarella", "cheddar"]],
-    ["Bakery", ["bread", "bagel", "wrap", "tortilla", "bun", "roll", "pitta", "pastry"]],
-    ["Pantry", ["rice", "pasta", "flour", "sugar", "salt", "pepper", "oil", "vinegar", "stock", "bean", "lentil", "chickpea", "noodle", "sauce", "spice", "oregano", "paprika", "cumin"]],
+    ["Dairy & Alternatives", ["milk", "cheese", "butter", "yogurt", "yoghurt", "cream", "egg", "parmesan", "mozzarella", "cheddar", "oat cream", "heavy cream", "cream cheese"]],
+    ["Bakery", ["bread", "bagel", "wrap", "tortilla", "bun", "roll", "pitta", "pita", "pastry"]],
+    ["Pasta & Noodles", ["pasta", "spaghetti", "orecchiette", "orzo", "noodle"]],
+    ["Rice & Grains", ["rice", "risotto", "arborio", "couscous", "quinoa"]],
+    ["Cans & Jars", ["can", "tin", "mutti", "chopped tomato", "kidney bean", "cannellini", "butter bean", "chickpea", "corn", "pitted black olive", "sun-dried tomato"]],
+    ["Protein & Nuts", ["tofu", "vegan mince", "lentil", "meatball", "cashew", "nori"]],
+    ["Sauces & Condiments", ["tomato purée", "tomato puree", "soy sauce", "tahini", "vinegar", "mayo", "oil", "paste"]],
+    ["Stock & Broth", ["stock cube", "veg stock", "vegetable stock", "broth"]],
+    ["Herbs & Spices", ["oregano", "paprika", "cumin", "turmeric", "tumeric", "thyme", "rosemary", "bay leaf", "coriander", "parsley", "basil", "herbes de provence", "curry powder", "ginger", "spice"]],
     ["Frozen", ["frozen", "peas", "ice cream"]],
   ];
 
-  const category = categories.find(([, keywords]) => keywords.some((keyword) => item.includes(keyword)));
+  const category = categories.find(([, keywords]) => keywords.some((keyword) => text.includes(keyword)));
   return category ? category[0] : "Other";
 }
 
@@ -1197,7 +1206,7 @@ function buildShoppingList() {
         ...parsed,
         amount: parsed.amount === null ? null : parsed.amount,
         count: 1,
-        category: getIngredientCategory(parsed.item),
+        category: getIngredientCategory(parsed),
       });
     });
   });
