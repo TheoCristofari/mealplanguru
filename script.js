@@ -1109,6 +1109,19 @@ function formatShoppingIngredient(item) {
   return titleCase(item.original || formatShoppingItem(item));
 }
 
+function sortShoppingLabels(labels) {
+  return [...labels].sort((a, b) => {
+    const aStartsWithNumber = /^\d/.test(a.trim());
+    const bStartsWithNumber = /^\d/.test(b.trim());
+
+    if (aStartsWithNumber !== bStartsWithNumber) {
+      return aStartsWithNumber ? -1 : 1;
+    }
+
+    return a.localeCompare(b);
+  });
+}
+
 function getPlannedRecipes() {
   const plannedRecipeNames = Object.values(mealPlan).filter((name) => name && name !== "Leftovers");
   return plannedRecipeNames
@@ -1259,8 +1272,7 @@ function renderShoppingByCategory() {
 
   Object.entries(groupedItems).forEach(([category, items]) => {
     const list = document.createElement("ul");
-    items.forEach((item) => {
-      const label = formatShoppingIngredient(item);
+    sortShoppingLabels(items.map(formatShoppingIngredient)).forEach((label) => {
       list.append(createShoppingCheckItem(label, `auto:category:${category}:${label}`));
     });
 
@@ -1279,8 +1291,7 @@ function renderShoppingByRecipe() {
 
   shoppingRecipes.forEach((recipe) => {
     const list = document.createElement("ul");
-    recipe.ingredients.forEach((item) => {
-      const label = formatShoppingIngredient(item);
+    sortShoppingLabels(recipe.ingredients.map(formatShoppingIngredient)).forEach((label) => {
       list.append(createShoppingCheckItem(label, `auto:recipe:${recipe.id}:${label}`));
     });
 
