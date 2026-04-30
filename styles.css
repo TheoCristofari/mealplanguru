@@ -876,17 +876,29 @@ h1 {
 }
 
 .manual-shopping-remove {
-  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border: 1px solid transparent;
+  border-radius: 6px;
   color: #6b7280;
   background: transparent;
-  font: inherit;
-  font-size: 0.78rem;
-  font-weight: 700;
   cursor: pointer;
 }
 
 .manual-shopping-remove:hover {
+  border-color: #e5e7eb;
   color: #dc2626;
+  background: #f9fafb;
+}
+
+.manual-shopping-remove svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
 }
 
 .manual-shopping-form {
