@@ -37,7 +37,7 @@ const authModal = document.querySelector("[data-auth-modal]");
 const authForm = document.querySelector("[data-auth-form]");
 const authTitle = document.querySelector("[data-auth-title]");
 const authMessage = document.querySelector("[data-auth-message]");
-const adminChoiceButton = document.querySelector("[data-admin-choice]");
+const adminChoiceList = document.querySelector("[data-admin-choice-list]");
 const closeAuthButton = document.querySelector("[data-close-auth]");
 const SITE_PASSWORD = "guru";
 const SITE_UNLOCK_KEY = "mealPlanGuruUnlocked";
@@ -47,8 +47,11 @@ const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_r_My8zwj297QswRnj9Dvmw_6vMeJBhj
 const SUPABASE_RECIPE_TABLE = "recipes";
 const SUPABASE_EXTRAS_TABLE = "shopping_extras";
 const SUPABASE_IMAGE_BUCKET = "recipe-images";
-const ADMIN_EMAIL = "theo@companydebt.com";
-const ADMIN_DISPLAY_NAME = "Théo";
+const ADMIN_USERS = [
+  { email: "theo@companydebt.com", name: "Th\u00e9o" },
+  { email: "simon.cristofari@icloud.com", name: "Simon" },
+];
+const DEFAULT_OWNER_EMAIL = ADMIN_USERS[0].email;
 const ADMIN_REDIRECT_URL = "https://theocristofari.github.io/mealplanguru/";
 const ADMIN_LOGIN_ICON = `
   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -83,6 +86,10 @@ const MEAL_DROPDOWN_COLUMNS = [
 ];
 
 
+let currentUser = null;
+let isAdmin = false;
+let currentOwnerEmail = DEFAULT_OWNER_EMAIL;
+let pendingLoginEmail = DEFAULT_OWNER_EMAIL;
 let pendingDeleteCard = null;
 let recipes = [];
 let mealPlan = loadMealPlan();
@@ -93,8 +100,6 @@ let checkedShoppingItems = loadCheckedShoppingItems();
 let shoppingView = "category";
 let recipeFilter = "all";
 let editingRecipeId = null;
-let currentUser = null;
-let isAdmin = false;
 let authLinkSent = false;
 
 function unlockSite() {
@@ -122,9 +127,61 @@ function initializePasswordGate() {
   passwordInput?.focus();
 }
 
-function updateAdminState(user) {
+function normalizeEmail(email) {
+  return String(email || "").trim().toLowerCase();
+}
+
+function getAdminUser(email) {
+  const normalizedEmail = normalizeEmail(email);
+  return ADMIN_USERS.find((user) => user.email === normalizedEmail) || null;
+}
+
+function getActiveOwnerEmail() {
+  const adminUser = getAdminUser(currentUser?.email);
+  return adminUser?.email || DEFAULT_OWNER_EMAIL;
+}
+
+function getOwnerStorageKey(baseKey) {
+  return currentOwnerEmail === DEFAULT_OWNER_EMAIL ? baseKey : `${baseKey}:${currentOwnerEmail}`;
+}
+
+function renderAdminChoices() {
+  if (!adminChoiceList) {
+    return;
+  }
+
+  adminChoiceList.innerHTML = "";
+  ADMIN_USERS.forEach((adminUser) => {
+    const button = document.createElement("button");
+    button.className = "admin-choice-button";
+    button.type = "submit";
+    button.dataset.adminEmail = adminUser.email;
+    button.textContent = adminUser.name;
+    adminChoiceList.append(button);
+  });
+}
+
+async function reloadOwnerData() {
+  recipes = [];
+  mealPlan = loadMealPlan();
+  shoppingItems = loadShoppingList();
+  shoppingRecipes = loadShoppingRecipes();
+  manualShoppingItems = loadManualShoppingList();
+  checkedShoppingItems = loadCheckedShoppingItems();
+  await loadInitialRecipes();
+  await loadInitialManualShoppingList();
+  renderCalendar();
+  renderRecipes();
+  renderShoppingList();
+  renderManualShoppingList();
+}
+
+function updateAdminState(user, shouldReload = true) {
   currentUser = user || null;
-  isAdmin = currentUser?.email?.toLowerCase() === ADMIN_EMAIL;
+  isAdmin = Boolean(getAdminUser(currentUser?.email));
+  const nextOwnerEmail = getActiveOwnerEmail();
+  const ownerChanged = currentOwnerEmail !== nextOwnerEmail;
+  currentOwnerEmail = nextOwnerEmail;
   document.body.classList.toggle("is-admin", isAdmin);
 
   if (authButton) {
@@ -138,6 +195,11 @@ function updateAdminState(user) {
     addRecipeButton.hidden = !isAdmin;
   }
 
+  if (ownerChanged && shouldReload) {
+    reloadOwnerData();
+    return;
+  }
+
   renderRecipes();
 }
 
@@ -147,7 +209,7 @@ async function initializeAuth() {
   }
 
   const { data } = await supabaseClient.auth.getSession();
-  updateAdminState(data.session?.user || null);
+  updateAdminState(data.session?.user || null, false);
   supabaseClient.auth.onAuthStateChange((event, session) => {
     updateAdminState(session?.user || null);
   });
@@ -159,16 +221,14 @@ function openAuthModal() {
   }
 
   authLinkSent = false;
+  pendingLoginEmail = DEFAULT_OWNER_EMAIL;
   if (authTitle) {
     authTitle.textContent = "Who's There?";
   }
   authMessage.textContent = "Select a user";
-  if (adminChoiceButton) {
-    adminChoiceButton.textContent = ADMIN_DISPLAY_NAME;
-    adminChoiceButton.classList.remove("is-confirmation");
-  }
+  renderAdminChoices();
   authModal.hidden = false;
-  adminChoiceButton?.focus();
+  adminChoiceList?.querySelector("button")?.focus();
 }
 
 function closeAuthModal() {
@@ -387,14 +447,14 @@ function closeAdminRequiredModal() {
 
 function loadRecipes() {
   try {
-    return JSON.parse(localStorage.getItem("mealPlanGuruRecipes")) || [];
+    return JSON.parse(localStorage.getItem(getOwnerStorageKey("mealPlanGuruRecipes"))) || [];
   } catch {
     return [];
   }
 }
 
 function saveRecipes() {
-  localStorage.setItem("mealPlanGuruRecipes", JSON.stringify(recipes));
+  localStorage.setItem(getOwnerStorageKey("mealPlanGuruRecipes"), JSON.stringify(recipes));
 }
 
 function recipeToSupabaseRow(recipe, index = 0) {
@@ -405,6 +465,7 @@ function recipeToSupabaseRow(recipe, index = 0) {
     label: recipe.label || "",
     photo_url: recipe.photoUrl || "",
     sort_order: index,
+    owner_email: normalizeEmail(recipe.ownerEmail || currentOwnerEmail),
   };
 }
 
@@ -415,6 +476,7 @@ function recipeFromSupabaseRow(row) {
     ingredients: row.ingredients,
     label: row.label || "",
     photoUrl: row.photo_url || "",
+    ownerEmail: row.owner_email || DEFAULT_OWNER_EMAIL,
   });
 }
 
@@ -425,12 +487,29 @@ async function loadSupabaseRecipes() {
 
   const { data, error } = await supabaseClient
     .from(SUPABASE_RECIPE_TABLE)
-    .select("id,name,ingredients,label,photo_url,sort_order")
+    .select("id,name,ingredients,label,photo_url,sort_order,owner_email")
+    .eq("owner_email", currentOwnerEmail)
     .order("sort_order", { ascending: true })
     .order("name", { ascending: true });
 
   if (error || !Array.isArray(data)) {
-    return [];
+    if (!error?.message?.includes("owner_email")) {
+      return [];
+    }
+
+    const legacyResult = await supabaseClient
+      .from(SUPABASE_RECIPE_TABLE)
+      .select("id,name,ingredients,label,photo_url,sort_order")
+      .order("sort_order", { ascending: true })
+      .order("name", { ascending: true });
+
+    if (legacyResult.error || !Array.isArray(legacyResult.data)) {
+      return [];
+    }
+
+    return currentOwnerEmail === DEFAULT_OWNER_EMAIL
+      ? legacyResult.data.map(recipeFromSupabaseRow).filter(Boolean)
+      : [];
   }
 
   return data.map(recipeFromSupabaseRow).filter(Boolean);
@@ -455,7 +534,11 @@ async function deleteRecipeFromSupabase(recipeId) {
     throw new Error("You need to be logged in as admin to delete recipes.");
   }
 
-  const { error } = await supabaseClient.from(SUPABASE_RECIPE_TABLE).delete().eq("id", recipeId);
+  const { error } = await supabaseClient
+    .from(SUPABASE_RECIPE_TABLE)
+    .delete()
+    .eq("id", recipeId)
+    .eq("owner_email", currentOwnerEmail);
 
   if (error) {
     throw error;
@@ -500,6 +583,7 @@ function normalizeRecipeRecord(recipe) {
     ingredients: cleanIngredients,
     label: recipe.label === "noodle" ? "noodles" : recipe.label || inferRecipeLabel({ ...recipe, ingredients: cleanIngredients }),
     photoUrl: recipe.photoUrl || "",
+    ownerEmail: normalizeEmail(recipe.ownerEmail || recipe.owner_email || currentOwnerEmail),
   };
 }
 
@@ -519,7 +603,8 @@ async function uploadRecipePhoto(file, recipe) {
 
   const extension = file.name.includes(".") ? file.name.split(".").pop().toLowerCase() : "jpg";
   const safeName = slugifyFilename(recipe.name);
-  const path = `${recipe.id}/${safeName}-${Date.now()}.${extension}`;
+  const ownerFolder = slugifyFilename(currentOwnerEmail);
+  const path = `${ownerFolder}/${recipe.id}/${safeName}-${Date.now()}.${extension}`;
   const { error } = await supabaseClient.storage
     .from(SUPABASE_IMAGE_BUCKET)
     .upload(path, file, {
@@ -569,14 +654,14 @@ function mergeRecipeData(fileRecipes, savedRecipes) {
 
 async function loadInitialRecipes() {
   const supabaseRecipes = await loadSupabaseRecipes();
-  const fileRecipes = await loadRecipeFile();
+  const fileRecipes = currentOwnerEmail === DEFAULT_OWNER_EMAIL ? await loadRecipeFile() : [];
   const cachedRecipes = loadRecipes();
   const baselineRecipes = supabaseRecipes.length > 0 ? supabaseRecipes : fileRecipes;
   recipes = baselineRecipes.length > 0 ? baselineRecipes : cachedRecipes;
   saveRecipes();
   backfillRecipeLabels();
 
-  if (supabaseRecipes.length === 0 && recipes.length > 0) {
+  if (currentOwnerEmail === DEFAULT_OWNER_EMAIL && supabaseRecipes.length === 0 && recipes.length > 0) {
     syncRecipesToSupabase();
   }
 }
@@ -653,43 +738,43 @@ function backfillRecipeLabels() {
 
 function loadMealPlan() {
   try {
-    return JSON.parse(localStorage.getItem("mealPlanGuruMealPlan")) || {};
+    return JSON.parse(localStorage.getItem(getOwnerStorageKey("mealPlanGuruMealPlan"))) || {};
   } catch {
     return {};
   }
 }
 
 function saveMealPlan() {
-  localStorage.setItem("mealPlanGuruMealPlan", JSON.stringify(mealPlan));
+  localStorage.setItem(getOwnerStorageKey("mealPlanGuruMealPlan"), JSON.stringify(mealPlan));
 }
 
 function loadShoppingList() {
   try {
-    return JSON.parse(localStorage.getItem("mealPlanGuruShoppingList")) || [];
+    return JSON.parse(localStorage.getItem(getOwnerStorageKey("mealPlanGuruShoppingList"))) || [];
   } catch {
     return [];
   }
 }
 
 function saveShoppingList() {
-  localStorage.setItem("mealPlanGuruShoppingList", JSON.stringify(shoppingItems));
+  localStorage.setItem(getOwnerStorageKey("mealPlanGuruShoppingList"), JSON.stringify(shoppingItems));
 }
 
 function loadShoppingRecipes() {
   try {
-    return JSON.parse(localStorage.getItem("mealPlanGuruShoppingRecipes")) || [];
+    return JSON.parse(localStorage.getItem(getOwnerStorageKey("mealPlanGuruShoppingRecipes"))) || [];
   } catch {
     return [];
   }
 }
 
 function saveShoppingRecipes() {
-  localStorage.setItem("mealPlanGuruShoppingRecipes", JSON.stringify(shoppingRecipes));
+  localStorage.setItem(getOwnerStorageKey("mealPlanGuruShoppingRecipes"), JSON.stringify(shoppingRecipes));
 }
 
 function loadManualShoppingList() {
   try {
-    return (JSON.parse(localStorage.getItem("mealPlanGuruManualShoppingList")) || [])
+    return (JSON.parse(localStorage.getItem(getOwnerStorageKey("mealPlanGuruManualShoppingList"))) || [])
       .map(normalizeManualShoppingItem)
       .filter(Boolean);
   } catch {
@@ -698,7 +783,7 @@ function loadManualShoppingList() {
 }
 
 function saveManualShoppingList() {
-  localStorage.setItem("mealPlanGuruManualShoppingList", JSON.stringify(manualShoppingItems));
+  localStorage.setItem(getOwnerStorageKey("mealPlanGuruManualShoppingList"), JSON.stringify(manualShoppingItems));
 }
 
 function createManualShoppingItemId() {
@@ -746,14 +831,14 @@ async function loadInitialManualShoppingList() {
 
 function loadCheckedShoppingItems() {
   try {
-    return new Set(JSON.parse(localStorage.getItem("mealPlanGuruCheckedShoppingItems")) || []);
+    return new Set(JSON.parse(localStorage.getItem(getOwnerStorageKey("mealPlanGuruCheckedShoppingItems"))) || []);
   } catch {
     return new Set();
   }
 }
 
 function saveCheckedShoppingItems() {
-  localStorage.setItem("mealPlanGuruCheckedShoppingItems", JSON.stringify(Array.from(checkedShoppingItems)));
+  localStorage.setItem(getOwnerStorageKey("mealPlanGuruCheckedShoppingItems"), JSON.stringify(Array.from(checkedShoppingItems)));
 }
 
 function getMealPlanKey(dateKey, mealKey) {
@@ -1125,6 +1210,7 @@ function manualShoppingItemToSupabaseRow(item, index = 0) {
     id: item.id,
     item: item.item,
     sort_order: index,
+    owner_email: currentOwnerEmail,
   };
 }
 
@@ -1132,6 +1218,7 @@ function manualShoppingItemFromSupabaseRow(row) {
   return normalizeManualShoppingItem({
     id: row.id,
     item: row.item,
+    ownerEmail: row.owner_email || DEFAULT_OWNER_EMAIL,
   });
 }
 
@@ -1142,12 +1229,29 @@ async function loadSupabaseManualShoppingList() {
 
   const { data, error } = await supabaseClient
     .from(SUPABASE_EXTRAS_TABLE)
-    .select("id,item,sort_order")
+    .select("id,item,sort_order,owner_email")
+    .eq("owner_email", currentOwnerEmail)
     .order("sort_order", { ascending: true })
     .order("item", { ascending: true });
 
   if (error || !Array.isArray(data)) {
-    return [];
+    if (!error?.message?.includes("owner_email")) {
+      return [];
+    }
+
+    const legacyResult = await supabaseClient
+      .from(SUPABASE_EXTRAS_TABLE)
+      .select("id,item,sort_order")
+      .order("sort_order", { ascending: true })
+      .order("item", { ascending: true });
+
+    if (legacyResult.error || !Array.isArray(legacyResult.data)) {
+      return [];
+    }
+
+    return currentOwnerEmail === DEFAULT_OWNER_EMAIL
+      ? legacyResult.data.map(manualShoppingItemFromSupabaseRow).filter(Boolean)
+      : [];
   }
 
   return data.map(manualShoppingItemFromSupabaseRow).filter(Boolean);
@@ -1172,7 +1276,11 @@ async function deleteManualShoppingItemFromSupabase(itemId) {
     throw new Error("Supabase is not available.");
   }
 
-  const { error } = await supabaseClient.from(SUPABASE_EXTRAS_TABLE).delete().eq("id", itemId);
+  const { error } = await supabaseClient
+    .from(SUPABASE_EXTRAS_TABLE)
+    .delete()
+    .eq("id", itemId)
+    .eq("owner_email", currentOwnerEmail);
 
   if (error) {
     throw error;
@@ -1727,13 +1835,21 @@ authForm?.addEventListener("submit", async (event) => {
     return;
   }
 
+  const submitButton = event.submitter?.closest("[data-admin-email]");
+  const selectedAdmin = getAdminUser(submitButton?.dataset.adminEmail || pendingLoginEmail);
+  if (!selectedAdmin) {
+    authMessage.textContent = "Select a user";
+    return;
+  }
+  pendingLoginEmail = selectedAdmin.email;
+
   if (!supabaseClient) {
     authMessage.textContent = "Admin login is not available right now.";
     return;
   }
 
   const { error } = await supabaseClient.auth.signInWithOtp({
-    email: ADMIN_EMAIL,
+    email: selectedAdmin.email,
     options: {
       emailRedirectTo: ADMIN_REDIRECT_URL,
     },
@@ -1746,10 +1862,14 @@ authForm?.addEventListener("submit", async (event) => {
 
   authLinkSent = true;
   authMessage.innerHTML = "<strong>Link sent</strong><br>Check your email";
-  if (adminChoiceButton) {
-    adminChoiceButton.textContent = "OK";
-    adminChoiceButton.classList.add("is-confirmation");
-    adminChoiceButton.focus();
+  if (adminChoiceList) {
+    adminChoiceList.innerHTML = "";
+    const okButton = document.createElement("button");
+    okButton.className = "admin-choice-button is-confirmation";
+    okButton.type = "submit";
+    okButton.textContent = "OK";
+    adminChoiceList.append(okButton);
+    okButton.focus();
   }
 });
 authModal?.addEventListener("click", (event) => {
@@ -1897,6 +2017,7 @@ recipeForm?.addEventListener("submit", async (event) => {
     ingredients,
     label,
     photoUrl: existingRecipe?.photoUrl || "",
+    ownerEmail: existingRecipe?.ownerEmail || currentOwnerEmail,
   };
   let photoUrl = draftRecipe.photoUrl;
 
@@ -1923,6 +2044,7 @@ recipeForm?.addEventListener("submit", async (event) => {
         ingredients,
         label,
         photoUrl,
+        ownerEmail: recipe.ownerEmail || currentOwnerEmail,
       };
     });
 
@@ -1940,6 +2062,7 @@ recipeForm?.addEventListener("submit", async (event) => {
       ingredients,
       label,
       photoUrl,
+      ownerEmail: currentOwnerEmail,
     }, ...recipes];
   }
 

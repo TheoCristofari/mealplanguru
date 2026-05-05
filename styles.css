@@ -1366,6 +1366,11 @@ h1 {
   gap: 18px;
 }
 
+.admin-choice-list {
+  display: grid;
+  gap: 10px;
+}
+
 .admin-choice-button {
   min-height: 46px;
   border: 1px solid var(--line);
