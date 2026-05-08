@@ -8,6 +8,7 @@ where owner_email is null or owner_email = '';
 alter table public.recipes alter column owner_email set not null;
 create index if not exists recipes_owner_sort_idx
 on public.recipes(owner_email, sort_order, name);
+notify pgrst, 'reload schema';
 
 create table if not exists public.shopping_extras (
   id text primary key,
@@ -166,3 +167,5 @@ using (
   bucket_id = 'recipe-images'
   and lower(auth.jwt() ->> 'email') in ('theo@companydebt.com', 'simon.cristofari@icloud.com')
 );
+
+notify pgrst, 'reload schema';
