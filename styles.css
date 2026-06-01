@@ -528,6 +528,11 @@ body:not(.locked) .password-screen {
   --planned-bg: #fbcfe8;
 }
 
+.planned-recipe-naughties {
+  --planned-text: #991b1b;
+  --planned-bg: #fecaca;
+}
+
 .planned-recipe-name {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -647,6 +652,11 @@ body:not(.locked) .password-screen {
 .meal-dropdown-heading-quiche {
   color: #9d174d;
   background: #fbcfe8;
+}
+
+.meal-dropdown-heading-naughties {
+  color: #991b1b;
+  background: #fecaca;
 }
 
 .meal-dropdown-item,
@@ -1272,6 +1282,11 @@ h1 {
 .recipe-label-quiche {
   color: #9d174d;
   background: #fbcfe8;
+}
+
+.recipe-label-naughties {
+  color: #991b1b;
+  background: #fecaca;
 }
 
 .recipe-photo {
