@@ -46,6 +46,7 @@ const SUPABASE_URL = "https://beguxpppyngjphetlviv.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_r_My8zwj297QswRnj9Dvmw_6vMeJBhj";
 const SUPABASE_RECIPE_TABLE = "recipes";
 const SUPABASE_EXTRAS_TABLE = "shopping_extras";
+const SUPABASE_MEAL_PLAN_TABLE = "meal_plans";
 const SUPABASE_IMAGE_BUCKET = "recipe-images";
 const ADMIN_USERS = [
   { email: "theo@companydebt.com", name: "Th\u00e9o" },
@@ -170,6 +171,7 @@ async function reloadOwnerData() {
   manualShoppingItems = loadManualShoppingList();
   checkedShoppingItems = loadCheckedShoppingItems();
   await loadInitialRecipes();
+  await loadInitialMealPlan();
   await loadInitialManualShoppingList();
   renderCalendar();
   renderRecipes();
@@ -746,6 +748,70 @@ function loadMealPlan() {
 }
 
 function saveMealPlan() {
+  localStorage.setItem(getOwnerStorageKey("mealPlanGuruMealPlan"), JSON.stringify(mealPlan));
+
+  if (isAdmin) {
+    saveMealPlanToSupabase().catch((error) => {
+      console.error(error);
+      alert(`The planner could not be saved to Supabase: ${error.message || "Please try again."}`);
+    });
+  }
+}
+
+async function loadSupabaseMealPlan() {
+  if (!supabaseClient) {
+    return null;
+  }
+
+  const { data, error } = await supabaseClient
+    .from(SUPABASE_MEAL_PLAN_TABLE)
+    .select("assignments")
+    .eq("owner_email", currentOwnerEmail)
+    .maybeSingle();
+
+  if (error) {
+    console.error(error);
+    return null;
+  }
+
+  return {
+    found: Boolean(data),
+    assignments: data?.assignments && typeof data.assignments === "object" ? data.assignments : {},
+  };
+}
+
+async function saveMealPlanToSupabase() {
+  if (!supabaseClient || !isAdmin) {
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from(SUPABASE_MEAL_PLAN_TABLE)
+    .upsert({
+      owner_email: currentOwnerEmail,
+      assignments: mealPlan,
+      updated_at: new Date().toISOString(),
+    });
+
+  if (error) {
+    throw error;
+  }
+}
+
+async function loadInitialMealPlan() {
+  const cachedMealPlan = loadMealPlan();
+  const supabaseMealPlan = await loadSupabaseMealPlan();
+
+  if (supabaseMealPlan?.found) {
+    mealPlan = supabaseMealPlan.assignments;
+  } else {
+    mealPlan = cachedMealPlan;
+
+    if (supabaseMealPlan && isAdmin) {
+      await saveMealPlanToSupabase();
+    }
+  }
+
   localStorage.setItem(getOwnerStorageKey("mealPlanGuruMealPlan"), JSON.stringify(mealPlan));
 }
 
@@ -2093,6 +2159,7 @@ async function initializeApp() {
   initializePasswordGate();
   await initializeAuth();
   await loadInitialRecipes();
+  await loadInitialMealPlan();
   await loadInitialManualShoppingList();
   showView(window.location.hash.replace("#", ""));
   renderCalendar();
