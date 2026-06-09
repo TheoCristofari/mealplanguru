@@ -753,9 +753,17 @@ function saveMealPlan() {
   if (isAdmin) {
     saveMealPlanToSupabase().catch((error) => {
       console.error(error);
+      if (isMissingMealPlanTableError(error)) {
+        return;
+      }
       alert(`The planner could not be saved to Supabase: ${error.message || "Please try again."}`);
     });
   }
+}
+
+function isMissingMealPlanTableError(error) {
+  const message = String(error?.message || "").toLowerCase();
+  return message.includes("meal_plans") && (message.includes("schema cache") || message.includes("does not exist"));
 }
 
 async function loadSupabaseMealPlan() {
@@ -770,6 +778,9 @@ async function loadSupabaseMealPlan() {
     .maybeSingle();
 
   if (error) {
+    if (isMissingMealPlanTableError(error)) {
+      return null;
+    }
     console.error(error);
     return null;
   }
