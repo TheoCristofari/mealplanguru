@@ -508,6 +508,11 @@ body:not(.locked) .password-screen {
   --planned-bg: #bae6fd;
 }
 
+.planned-recipe-semoule {
+  --planned-text: #5f3f0b;
+  --planned-bg: #fef3c7;
+}
+
 .planned-recipe-potato {
   --planned-text: #854d0e;
   --planned-bg: #fde68a;
@@ -531,6 +536,11 @@ body:not(.locked) .password-screen {
 .planned-recipe-naughties {
   --planned-text: #991b1b;
   --planned-bg: #fecaca;
+}
+
+.planned-recipe-pique-nique {
+  --planned-text: #365314;
+  --planned-bg: #d9f99d;
 }
 
 .planned-recipe-name {
@@ -634,6 +644,11 @@ body:not(.locked) .password-screen {
   background: #bae6fd;
 }
 
+.meal-dropdown-heading-semoule {
+  color: #5f3f0b;
+  background: #fef3c7;
+}
+
 .meal-dropdown-heading-potato {
   color: #854d0e;
   background: #fde68a;
@@ -657,6 +672,11 @@ body:not(.locked) .password-screen {
 .meal-dropdown-heading-naughties {
   color: #991b1b;
   background: #fecaca;
+}
+
+.meal-dropdown-heading-pique-nique {
+  color: #365314;
+  background: #d9f99d;
 }
 
 .meal-dropdown-item,
@@ -1264,6 +1284,11 @@ h1 {
   background: #bae6fd;
 }
 
+.recipe-label-semoule {
+  color: #5f3f0b;
+  background: #fef3c7;
+}
+
 .recipe-label-potato {
   color: #854d0e;
   background: #fde68a;
@@ -1287,6 +1312,11 @@ h1 {
 .recipe-label-naughties {
   color: #991b1b;
   background: #fecaca;
+}
+
+.recipe-label-pique-nique {
+  color: #365314;
+  background: #d9f99d;
 }
 
 .recipe-photo {

@@ -68,23 +68,36 @@ const ADMIN_SIGN_OUT_ICON = `
   </svg>
 `;
 const supabaseClient = window.supabase?.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) || null;
-const RECIPE_LABEL_ORDER = ["pasta", "rice", "potato", "noodles", "soup", "quiche", "naughties", ""];
+const RECIPE_LABEL_ORDER = [
+  "pasta",
+  "rice",
+  "semoule",
+  "potato",
+  "noodles",
+  "soup",
+  "quiche",
+  "naughties",
+  "pique-nique",
+  "",
+];
 const DEFAULT_INGREDIENT_PREVIEW_LIMIT = 4;
 const COMPACT_INGREDIENT_PREVIEW_LIMIT = 3;
 const RECIPE_LABEL_NAMES = {
   pasta: "Pasta",
   rice: "Rice",
+  semoule: "Semoule",
   potato: "Potato",
   noodles: "Noodles",
   soup: "Soup",
   quiche: "Quiche",
   naughties: "Naughties",
+  "pique-nique": "Pique-Nique",
   "": "Other",
 };
 const MEAL_DROPDOWN_COLUMNS = [
   ["built-ins", "pasta", "noodles", ""],
-  ["rice", "soup"],
-  ["potato", "quiche", "naughties"],
+  ["rice", "semoule", "soup"],
+  ["potato", "quiche", "naughties", "pique-nique"],
 ];
 
 
