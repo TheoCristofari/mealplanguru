@@ -281,6 +281,35 @@ function showView(viewName) {
   if (selectedView === "recipes") {
     scheduleRecipePreviewRefresh();
   }
+
+  if (selectedView === "calendar") {
+    scheduleCalendarRepair();
+  }
+}
+
+function normalizeMealPlan(plan) {
+  if (!plan || typeof plan !== "object" || Array.isArray(plan)) {
+    return {};
+  }
+
+  return Object.fromEntries(
+    Object.entries(plan)
+      .filter(([key, value]) => typeof key === "string" && typeof value === "string" && value.trim())
+  );
+}
+
+function scheduleCalendarRepair() {
+  requestAnimationFrame(() => {
+    if (calendarGrid && calendarGrid.children.length !== 14) {
+      renderCalendar();
+    }
+  });
+
+  window.setTimeout(() => {
+    if (calendarGrid && calendarGrid.children.length !== 14) {
+      renderCalendar();
+    }
+  }, 250);
 }
 
 function renderCalendar() {
@@ -288,6 +317,7 @@ function renderCalendar() {
     return;
   }
 
+  mealPlan = normalizeMealPlan(mealPlan);
   calendarGrid.innerHTML = "";
 
   for (let index = 0; index < 14; index += 1) {
