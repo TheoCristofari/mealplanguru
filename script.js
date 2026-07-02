@@ -53,7 +53,6 @@ const ADMIN_USERS = [
   { email: "simon.cristofari@icloud.com", name: "Simon" },
 ];
 const DEFAULT_OWNER_EMAIL = ADMIN_USERS[0].email;
-const ADMIN_REDIRECT_URL = "https://theocristofari.github.io/mealplanguru/";
 const ADMIN_LOGIN_ICON = `
   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
     <path d="M20 21a8 8 0 0 0-16 0" stroke-width="2" stroke-linecap="round"></path>
@@ -174,6 +173,10 @@ function renderAdminChoices() {
     button.textContent = adminUser.name;
     adminChoiceList.append(button);
   });
+}
+
+function getAdminRedirectUrl() {
+  return `${window.location.origin}${window.location.pathname}`;
 }
 
 async function reloadOwnerData() {
@@ -1942,7 +1945,7 @@ authForm?.addEventListener("submit", async (event) => {
   const { error } = await supabaseClient.auth.signInWithOtp({
     email: selectedAdmin.email,
     options: {
-      emailRedirectTo: ADMIN_REDIRECT_URL,
+      emailRedirectTo: getAdminRedirectUrl(),
     },
   });
 
